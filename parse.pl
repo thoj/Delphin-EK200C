@@ -13,24 +13,13 @@ while ( read(*STDIN, $header, $header_size) ) {
 	if ( $length > 0 ) {
 		read(*STDIN, $data, $length);
 		next if not $code == 128;
-#		my @f = unpack("(b18)*", $data);
-#		my @f = unpack("(h4)*", $data);
 		my (@t) = unpack("(VV)*", $data);
-#		print @t, "\n";
-#		printf("%5d %2d %5d (%2d): ", $code, $length, $sequence, scalar @f);
 		for (my $i = 0; $i < scalar @t; $i+=2) {#			print $x;
-		#	printf("%20s", $x)
-#			printf("%10s ", unpack("h*",$x));
-#			printf("%10d", unpack("V", $x))
-			my $flags = ($t[$i+1] >> 18) & (1 << 14) - 1;
-			my $value = ($t[$i+1] >> 0) & (1 << 18) - 1;
-#			printf("%.2f %d %d\n", $t[$i]/1000000, $value, $flags) if $flags == 3;
-			printf("%.2f %7d %7d %s\n", $t[$i]/1000000, $value, $flags, unpack("b32", pack("V", $t[$i+1])));
-#		print "\n";
-#			print "\n" if $lines % 5 == 0;
+			my $value = ($t[$i+1] >> 0) & (1 << 26) - 1;
+			my $chan = ($t[$i+1] >> 27) & (1 << 5) -1;
+			printf("%2d %9d %9d %s\n", $chan, $t[$i], $value, unpack("b32", pack("V", $t[$i+1])));
 			$lines ++;
 		}
-#		printf("%s", unpack("h".$length*2, $data));
 	}
 }
 
