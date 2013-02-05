@@ -1,0 +1,1048 @@
+<Adjustment Version="1.0.0" Date="2012-11-26T13:09:25.667+01:00" Hardware="MOKA4" Software="1.20" Person="Unknown" User="P/RL" Location="Delphin Technology AG">
+<Data Channel="8" MeasuringRange="0.1">
+<Coefficient Order="0">0.060942195</Coefficient>
+<Coefficient Order="1">1.0002381</Coefficient>
+<Coefficient Order="2">5.2712994e-07</Coefficient>
+<Coefficient Order="3">-1.1697537e-08</Coefficient>
+</Data>
+<Data Channel="24" MeasuringRange="0.1"><Coefficient Order="0">0.063257851</Coefficient>
+<Coefficient Order="1">1.0000399</Coefficient>
+<Coefficient Order="2">6.088068e-08</Coefficient>
+<Coefficient Order="3">1.6344348e-08</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="0.1"><Coefficient Order="0">0.062970161</Coefficient>
+<Coefficient Order="1">1.0001589</Coefficient>
+<Coefficient Order="2">6.7960366e-07</Coefficient>
+<Coefficient Order="3">-4.1099263e-10</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="0.1"><Coefficient Order="0">0.063864619</Coefficient>
+<Coefficient Order="1">1.0001121</Coefficient>
+<Coefficient Order="2">4.9891457e-07</Coefficient>
+<Coefficient Order="3">5.371577e-09</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="0.1"><Coefficient Order="0">0.063718967</Coefficient>
+<Coefficient Order="1">1.0002058</Coefficient>
+<Coefficient Order="2">5.7688101e-07</Coefficient>
+<Coefficient Order="3">-6.1935737e-09</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="0.1"><Coefficient Order="0">0.062896162</Coefficient>
+<Coefficient Order="1">1.0001893</Coefficient>
+<Coefficient Order="2">7.1915224e-07</Coefficient>
+<Coefficient Order="3">-3.623515e-09</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="0.1"><Coefficient Order="0">0.062584922</Coefficient>
+<Coefficient Order="1">1.0001589</Coefficient>
+<Coefficient Order="2">6.3760467e-07</Coefficient>
+<Coefficient Order="3">-4.1308323e-10</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="0.1"><Coefficient Order="0">0.063965835</Coefficient>
+<Coefficient Order="1">1.0001824</Coefficient>
+<Coefficient Order="2">5.0754034e-07</Coefficient>
+<Coefficient Order="3">-3.303068e-09</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="0.1"><Coefficient Order="0">0.063062206</Coefficient>
+<Coefficient Order="1">1.0001658</Coefficient>
+<Coefficient Order="2">4.4687073e-07</Coefficient>
+<Coefficient Order="3">-7.3274425e-10</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="0.1"><Coefficient Order="0">0.063045114</Coefficient>
+<Coefficient Order="1">1.0001425</Coefficient>
+<Coefficient Order="2">6.3993201e-07</Coefficient>
+<Coefficient Order="3">2.1591471e-09</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="0.1"><Coefficient Order="0">0.064731106</Coefficient>
+<Coefficient Order="1">1.0001754</Coefficient>
+<Coefficient Order="2">4.5686454e-07</Coefficient>
+<Coefficient Order="3">-2.981851e-09</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="0.2"><Coefficient Order="0">0.12369972</Coefficient>
+<Coefficient Order="1">1.0001184</Coefficient>
+<Coefficient Order="2">3.3503491e-07</Coefficient>
+<Coefficient Order="3">-2.8898417e-11</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="0.2"><Coefficient Order="0">0.12517996</Coefficient>
+<Coefficient Order="1">1.0000913</Coefficient>
+<Coefficient Order="2">3.1080813e-07</Coefficient>
+<Coefficient Order="3">9.4168517e-10</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="0.2"><Coefficient Order="0">0.12537846</Coefficient>
+<Coefficient Order="1">1.0000813</Coefficient>
+<Coefficient Order="2">2.8757162e-07</Coefficient>
+<Coefficient Order="3">1.3828894e-09</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="0.2"><Coefficient Order="0">0.125093</Coefficient>
+<Coefficient Order="1">1.0000985</Coefficient>
+<Coefficient Order="2">2.8614159e-07</Coefficient>
+<Coefficient Order="3">8.5342322e-10</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="0.2"><Coefficient Order="0">0.12389822</Coefficient>
+<Coefficient Order="1">1.0001085</Coefficient>
+<Coefficient Order="2">3.1179877e-07</Coefficient>
+<Coefficient Order="3">4.1224466e-10</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="0.2"><Coefficient Order="0">0.12312149</Coefficient>
+<Coefficient Order="1">1.0000985</Coefficient>
+<Coefficient Order="2">3.3298258e-07</Coefficient>
+<Coefficient Order="3">8.5343937e-10</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="0.2"><Coefficient Order="0">0.1234024</Coefficient>
+<Coefficient Order="1">1.0000471</Coefficient>
+<Coefficient Order="2">3.3484523e-07</Coefficient>
+<Coefficient Order="3">2.4419275e-09</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="0.2"><Coefficient Order="0">0.125093</Coefficient>
+<Coefficient Order="1">1.0000985</Coefficient>
+<Coefficient Order="2">2.8614159e-07</Coefficient>
+<Coefficient Order="3">8.5342322e-10</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="0.2"><Coefficient Order="0">0.12537846</Coefficient>
+<Coefficient Order="1">1.0000813</Coefficient>
+<Coefficient Order="2">2.8757162e-07</Coefficient>
+<Coefficient Order="3">1.3828894e-09</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="0.5"><Coefficient Order="0">0.31334752</Coefficient>
+<Coefficient Order="1">1.0002486</Coefficient>
+<Coefficient Order="2">1.1293364e-07</Coefficient>
+<Coefficient Order="3">2.0176484e-10</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="0.5"><Coefficient Order="0">0.31287244</Coefficient>
+<Coefficient Order="1">1.000272</Coefficient>
+<Coefficient Order="2">1.107133e-07</Coefficient>
+<Coefficient Order="3">8.5842895e-11</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="0.5"><Coefficient Order="0">0.30961958</Coefficient>
+<Coefficient Order="1">1.0002486</Coefficient>
+<Coefficient Order="2">1.3323397e-07</Coefficient>
+<Coefficient Order="3">2.0176943e-10</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="0.5"><Coefficient Order="0">0.31372356</Coefficient>
+<Coefficient Order="1">1.000232</Coefficient>
+<Coefficient Order="2">1.0497141e-07</Coefficient>
+<Coefficient Order="3">3.0480823e-10</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="0.5"><Coefficient Order="0">0.31373119</Coefficient>
+<Coefficient Order="1">1.0002649</Coefficient>
+<Coefficient Order="2">1.0482614e-07</Coefficient>
+<Coefficient Order="3">9.9500887e-11</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="0.5"><Coefficient Order="0">0.31287244</Coefficient>
+<Coefficient Order="1">1.000272</Coefficient>
+<Coefficient Order="2">1.107133e-07</Coefficient>
+<Coefficient Order="3">8.5842895e-11</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="0.5"><Coefficient Order="0">0.30903792</Coefficient>
+<Coefficient Order="1">1.0002649</Coefficient>
+<Coefficient Order="2">1.2091795e-07</Coefficient>
+<Coefficient Order="3">9.9523847e-11</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="0.5"><Coefficient Order="0">0.31373119</Coefficient>
+<Coefficient Order="1">1.0002649</Coefficient>
+<Coefficient Order="2">1.0482614e-07</Coefficient>
+<Coefficient Order="3">9.9500887e-11</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="0.5"><Coefficient Order="0">0.31373119</Coefficient>
+<Coefficient Order="1">1.0002649</Coefficient>
+<Coefficient Order="2">1.0482614e-07</Coefficient>
+<Coefficient Order="3">9.9500887e-11</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="1"><Coefficient Order="0">0.62388569</Coefficient>
+<Coefficient Order="1">1.0002446</Coefficient>
+<Coefficient Order="2">6.3076406e-08</Coefficient>
+<Coefficient Order="3">8.7570949e-12</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="1"><Coefficient Order="0">0.62463772</Coefficient>
+<Coefficient Order="1">1.0002282</Coefficient>
+<Coefficient Order="2">5.9095868e-08</Coefficient>
+<Coefficient Order="3">3.4514253e-11</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="1"><Coefficient Order="0">0.62387049</Coefficient>
+<Coefficient Order="1">1.0002118</Coefficient>
+<Coefficient Order="2">6.3149031e-08</Coefficient>
+<Coefficient Order="3">6.0079573e-11</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="1"><Coefficient Order="0">0.62387049</Coefficient>
+<Coefficient Order="1">1.0002118</Coefficient>
+<Coefficient Order="2">6.3149031e-08</Coefficient>
+<Coefficient Order="3">6.0079573e-11</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="1"><Coefficient Order="0">0.62463772</Coefficient>
+<Coefficient Order="1">1.0002282</Coefficient>
+<Coefficient Order="2">5.9095868e-08</Coefficient>
+<Coefficient Order="3">3.4514253e-11</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="1"><Coefficient Order="0">0.62463772</Coefficient>
+<Coefficient Order="1">1.0002282</Coefficient>
+<Coefficient Order="2">5.9095868e-08</Coefficient>
+<Coefficient Order="3">3.4514253e-11</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="1"><Coefficient Order="0">0.62388569</Coefficient>
+<Coefficient Order="1">1.0002446</Coefficient>
+<Coefficient Order="2">6.3076406e-08</Coefficient>
+<Coefficient Order="3">8.7570949e-12</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="1"><Coefficient Order="0">0.62290555</Coefficient>
+<Coefficient Order="1">1.0002213</Coefficient>
+<Coefficient Order="2">6.2081853e-08</Coefficient>
+<Coefficient Order="3">3.7735506e-11</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="1"><Coefficient Order="0">0.62290555</Coefficient>
+<Coefficient Order="1">1.0002213</Coefficient>
+<Coefficient Order="2">6.2081853e-08</Coefficient>
+<Coefficient Order="3">3.7735506e-11</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="2"><Coefficient Order="0">1.2353586</Coefficient>
+<Coefficient Order="1">1.0002182</Coefficient>
+<Coefficient Order="2">2.1435612e-08</Coefficient>
+<Coefficient Order="3">2.210198e-11</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="2"><Coefficient Order="0">1.2355628</Coefficient>
+<Coefficient Order="1">1.0003824</Coefficient>
+<Coefficient Order="2">2.1239238e-08</Coefficient>
+<Coefficient Order="3">-2.8641306e-11</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="2"><Coefficient Order="0">1.2353586</Coefficient>
+<Coefficient Order="1">1.0002182</Coefficient>
+<Coefficient Order="2">2.1435612e-08</Coefficient>
+<Coefficient Order="3">2.210198e-11</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="2"><Coefficient Order="0">1.2350229</Coefficient>
+<Coefficient Order="1">1.0002936</Coefficient>
+<Coefficient Order="2">2.276065e-08</Coefficient>
+<Coefficient Order="3">-2.5597805e-12</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="5"><Coefficient Order="0">3.0989835</Coefficient>
+<Coefficient Order="1">1.0003548</Coefficient>
+<Coefficient Order="2">6.3848615e-09</Coefficient>
+<Coefficient Order="3">-7.4796121e-13</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="5"><Coefficient Order="0">3.0992408</Coefficient>
+<Coefficient Order="1">1.0003475</Coefficient>
+<Coefficient Order="2">7.3948137e-09</Coefficient>
+<Coefficient Order="3">-6.0482321e-13</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="5"><Coefficient Order="0">3.0992408</Coefficient>
+<Coefficient Order="1">1.0003475</Coefficient>
+<Coefficient Order="2">7.3948137e-09</Coefficient>
+<Coefficient Order="3">-6.0482321e-13</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="10" MeasuringRange="10"><Coefficient Order="0">6.2054744</Coefficient>
+<Coefficient Order="1">1.0003923</Coefficient>
+<Coefficient Order="2">4.0014032e-09</Coefficient>
+<Coefficient Order="3">-2.1814298e-13</Coefficient>
+</Data>
+<Data Channel="13" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="16" MeasuringRange="10"><Coefficient Order="0">6.2089019</Coefficient>
+<Coefficient Order="1">1.0003501</Coefficient>
+<Coefficient Order="2">3.1824983e-09</Coefficient>
+<Coefficient Order="3">3.0169254e-13</Coefficient>
+</Data>
+<Data Channel="19" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="22" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="26" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="29" MeasuringRange="10"><Coefficient Order="0">6.2049861</Coefficient>
+<Coefficient Order="1">1.000386</Coefficient>
+<Coefficient Order="2">3.4956142e-09</Coefficient>
+<Coefficient Order="3">-1.9513492e-13</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="0.1"><Coefficient Order="0">0.061349031</Coefficient>
+<Coefficient Order="1">1.0001481</Coefficient>
+<Coefficient Order="2">6.6639586e-07</Coefficient>
+<Coefficient Order="3">2.2301843e-09</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="0.1"><Coefficient Order="0">0.062037054</Coefficient>
+<Coefficient Order="1">1.0001247</Coefficient>
+<Coefficient Order="2">6.5651739e-07</Coefficient>
+<Coefficient Order="3">5.1219406e-09</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="0.1"><Coefficient Order="0">0.062836848</Coefficient>
+<Coefficient Order="1">1.0001012</Coefficient>
+<Coefficient Order="2">4.6468844e-07</Coefficient>
+<Coefficient Order="3">8.0133367e-09</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="0.1"><Coefficient Order="0">0.062379856</Coefficient>
+<Coefficient Order="1">1.0001645</Coefficient>
+<Coefficient Order="2">4.6114408e-07</Coefficient>
+<Coefficient Order="3">-3.4192804e-10</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="0.1"><Coefficient Order="0">0.061443757</Coefficient>
+<Coefficient Order="1">1.0001247</Coefficient>
+<Coefficient Order="2">6.7750727e-07</Coefficient>
+<Coefficient Order="3">5.1213758e-09</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="0.1"><Coefficient Order="0">0.061403342</Coefficient>
+<Coefficient Order="1">1.0001246</Coefficient>
+<Coefficient Order="2">5.7602875e-07</Coefficient>
+<Coefficient Order="3">5.1213287e-09</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="0.1"><Coefficient Order="0">0.061060738</Coefficient>
+<Coefficient Order="1">1.0001575</Coefficient>
+<Coefficient Order="2">6.3440609e-07</Coefficient>
+<Coefficient Order="3">-1.8921472e-11</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="0.1"><Coefficient Order="0">0.062362388</Coefficient>
+<Coefficient Order="1">1.0002043</Coefficient>
+<Coefficient Order="2">4.0925184e-07</Coefficient>
+<Coefficient Order="3">-5.8030394e-09</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="0.1"><Coefficient Order="0">0.06197501</Coefficient>
+<Coefficient Order="1">1.0001037</Coefficient>
+<Coefficient Order="2">5.0448227e-07</Coefficient>
+<Coefficient Order="3">6.085124e-09</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="0.1"><Coefficient Order="0">0.061276283</Coefficient>
+<Coefficient Order="1">1.0001974</Coefficient>
+<Coefficient Order="2">7.0497344e-07</Coefficient>
+<Coefficient Order="3">-5.4793858e-09</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="0.2"><Coefficient Order="0">0.12140677</Coefficient>
+<Coefficient Order="1">1.0000588</Coefficient>
+<Coefficient Order="2">3.7532325e-07</Coefficient>
+<Coefficient Order="3">2.1101634e-09</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="0.2"><Coefficient Order="0">0.12320964</Coefficient>
+<Coefficient Order="1">1.0001129</Coefficient>
+<Coefficient Order="2">2.7841563e-07</Coefficient>
+<Coefficient Order="3">1.6859782e-10</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="0.2"><Coefficient Order="0">0.12280539</Coefficient>
+<Coefficient Order="1">1.0000786</Coefficient>
+<Coefficient Order="2">3.2569065e-07</Coefficient>
+<Coefficient Order="3">1.2275428e-09</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="0.2"><Coefficient Order="0">0.12301113</Coefficient>
+<Coefficient Order="1">1.0001228</Coefficient>
+<Coefficient Order="2">3.0165319e-07</Coefficient>
+<Coefficient Order="3">-2.7253805e-10</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="0.2"><Coefficient Order="0">0.12227502</Coefficient>
+<Coefficient Order="1">1.0000957</Coefficient>
+<Coefficient Order="2">3.7837373e-07</Coefficient>
+<Coefficient Order="3">6.9811096e-10</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="0.2"><Coefficient Order="0">0.12152363</Coefficient>
+<Coefficient Order="1">1.0000957</Coefficient>
+<Coefficient Order="2">3.2668291e-07</Coefficient>
+<Coefficient Order="3">6.9810185e-10</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="0.2"><Coefficient Order="0">0.12209465</Coefficient>
+<Coefficient Order="1">1.0000614</Coefficient>
+<Coefficient Order="2">3.2953596e-07</Coefficient>
+<Coefficient Order="3">1.7569771e-09</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="0.2"><Coefficient Order="0">0.12340627</Coefficient>
+<Coefficient Order="1">1.0000885</Coefficient>
+<Coefficient Order="2">2.5524119e-07</Coefficient>
+<Coefficient Order="3">7.8620888e-10</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="0.2"><Coefficient Order="0">0.11992916</Coefficient>
+<Coefficient Order="1">1.0001057</Coefficient>
+<Coefficient Order="2">3.9918515e-07</Coefficient>
+<Coefficient Order="3">2.5702379e-10</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="0.2"><Coefficient Order="0">0.12280539</Coefficient>
+<Coefficient Order="1">1.0000786</Coefficient>
+<Coefficient Order="2">3.2569065e-07</Coefficient>
+<Coefficient Order="3">1.2275428e-09</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="0.5"><Coefficient Order="0">0.3086687</Coefficient>
+<Coefficient Order="1">1.0002714</Coefficient>
+<Coefficient Order="2">1.3686325e-07</Coefficient>
+<Coefficient Order="3">9.0689865e-11</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="0.5"><Coefficient Order="0">0.30865374</Coefficient>
+<Coefficient Order="1">1.0002246</Coefficient>
+<Coefficient Order="2">1.3709392e-07</Coefficient>
+<Coefficient Order="3">3.2255185e-10</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="0.5"><Coefficient Order="0">0.31229022</Coefficient>
+<Coefficient Order="1">1.0002643</Coefficient>
+<Coefficient Order="2">1.0646657e-07</Coefficient>
+<Coefficient Order="3">1.0435714e-10</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="0.5"><Coefficient Order="0">0.30893832</Coefficient>
+<Coefficient Order="1">1.0002478</Coefficient>
+<Coefficient Order="2">1.1880426e-07</Coefficient>
+<Coefficient Order="3">2.0740397e-10</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="0.5"><Coefficient Order="0">0.3081786</Coefficient>
+<Coefficient Order="1">1.000248</Coefficient>
+<Coefficient Order="2">1.3487404e-07</Coefficient>
+<Coefficient Order="3">2.0661607e-10</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="0.5"><Coefficient Order="0">0.31229022</Coefficient>
+<Coefficient Order="1">1.0002643</Coefficient>
+<Coefficient Order="2">1.0646657e-07</Coefficient>
+<Coefficient Order="3">1.0435714e-10</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="0.5"><Coefficient Order="0">0.30865374</Coefficient>
+<Coefficient Order="1">1.0002246</Coefficient>
+<Coefficient Order="2">1.3709392e-07</Coefficient>
+<Coefficient Order="3">3.2255185e-10</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="0.5"><Coefficient Order="0">0.30903739</Coefficient>
+<Coefficient Order="1">1.0002409</Coefficient>
+<Coefficient Order="2">1.2898643e-07</Coefficient>
+<Coefficient Order="3">2.2028351e-10</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="0.5"><Coefficient Order="0">0.30903739</Coefficient>
+<Coefficient Order="1">1.0002409</Coefficient>
+<Coefficient Order="2">1.2898643e-07</Coefficient>
+<Coefficient Order="3">2.2028351e-10</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="0.5"><Coefficient Order="0">0.30903739</Coefficient>
+<Coefficient Order="1">1.0002409</Coefficient>
+<Coefficient Order="2">1.2898643e-07</Coefficient>
+<Coefficient Order="3">2.2028351e-10</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="1"><Coefficient Order="0">0.62422466</Coefficient>
+<Coefficient Order="1">1.0002509</Coefficient>
+<Coefficient Order="2">5.7646197e-08</Coefficient>
+<Coefficient Order="3">6.7589675e-12</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="1"><Coefficient Order="0">0.62422466</Coefficient>
+<Coefficient Order="1">1.0002509</Coefficient>
+<Coefficient Order="2">5.7646197e-08</Coefficient>
+<Coefficient Order="3">6.7589675e-12</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="1"><Coefficient Order="0">0.62324446</Coefficient>
+<Coefficient Order="1">1.0002276</Coefficient>
+<Coefficient Order="2">5.6651409e-08</Coefficient>
+<Coefficient Order="3">3.5737482e-11</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="1"><Coefficient Order="0">0.62247723</Coefficient>
+<Coefficient Order="1">1.0002112</Coefficient>
+<Coefficient Order="2">6.070438e-08</Coefficient>
+<Coefficient Order="3">6.1299257e-11</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="1"><Coefficient Order="0">0.62422466</Coefficient>
+<Coefficient Order="1">1.0002509</Coefficient>
+<Coefficient Order="2">5.7646197e-08</Coefficient>
+<Coefficient Order="3">6.7589675e-12</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="1"><Coefficient Order="0">0.62324446</Coefficient>
+<Coefficient Order="1">1.0002276</Coefficient>
+<Coefficient Order="2">5.6651409e-08</Coefficient>
+<Coefficient Order="3">3.5737482e-11</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="1"><Coefficient Order="0">0.62324446</Coefficient>
+<Coefficient Order="1">1.0002276</Coefficient>
+<Coefficient Order="2">5.6651409e-08</Coefficient>
+<Coefficient Order="3">3.5737482e-11</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="1"><Coefficient Order="0">0.62324446</Coefficient>
+<Coefficient Order="1">1.0002276</Coefficient>
+<Coefficient Order="2">5.6651409e-08</Coefficient>
+<Coefficient Order="3">3.5737482e-11</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="1"><Coefficient Order="0">0.62324446</Coefficient>
+<Coefficient Order="1">1.0002276</Coefficient>
+<Coefficient Order="2">5.6651409e-08</Coefficient>
+<Coefficient Order="3">3.5737482e-11</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="1"><Coefficient Order="0">0.62249249</Coefficient>
+<Coefficient Order="1">1.000244</Coefficient>
+<Coefficient Order="2">6.0632146e-08</Coefficient>
+<Coefficient Order="3">9.976635e-12</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="2"><Coefficient Order="0">1.2518497</Coefficient>
+<Coefficient Order="1">1.0003881</Coefficient>
+<Coefficient Order="2">2.0831502e-08</Coefficient>
+<Coefficient Order="3">-3.029927e-11</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="2"><Coefficient Order="0">1.2513252</Coefficient>
+<Coefficient Order="1">1.0003126</Coefficient>
+<Coefficient Order="2">2.2349184e-08</Coefficient>
+<Coefficient Order="3">-5.6303187e-12</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="2"><Coefficient Order="0">1.251292</Coefficient>
+<Coefficient Order="1">1.0003059</Coefficient>
+<Coefficient Order="2">1.9860908e-08</Coefficient>
+<Coefficient Order="3">-4.9254659e-12</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="5"><Coefficient Order="0">3.0989544</Coefficient>
+<Coefficient Order="1">1.0003568</Coefficient>
+<Coefficient Order="2">6.5244845e-09</Coefficient>
+<Coefficient Order="3">-8.5053714e-13</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="5"><Coefficient Order="0">3.1011701</Coefficient>
+<Coefficient Order="1">1.0003138</Coefficient>
+<Coefficient Order="2">6.9081767e-09</Coefficient>
+<Coefficient Order="3">1.2791375e-12</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="5"><Coefficient Order="0">3.1011701</Coefficient>
+<Coefficient Order="1">1.0003138</Coefficient>
+<Coefficient Order="2">6.9081767e-09</Coefficient>
+<Coefficient Order="3">1.2791375e-12</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="5"><Coefficient Order="0">3.0989544</Coefficient>
+<Coefficient Order="1">1.0003568</Coefficient>
+<Coefficient Order="2">6.5244845e-09</Coefficient>
+<Coefficient Order="3">-8.5053714e-13</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="5"><Coefficient Order="0">3.0989544</Coefficient>
+<Coefficient Order="1">1.0003568</Coefficient>
+<Coefficient Order="2">6.5244845e-09</Coefficient>
+<Coefficient Order="3">-8.5053714e-13</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="5"><Coefficient Order="0">3.1011701</Coefficient>
+<Coefficient Order="1">1.0003138</Coefficient>
+<Coefficient Order="2">6.9081767e-09</Coefficient>
+<Coefficient Order="3">1.2791375e-12</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="5"><Coefficient Order="0">3.1033785</Coefficient>
+<Coefficient Order="1">1.00035</Coefficient>
+<Coefficient Order="2">6.2352714e-09</Coefficient>
+<Coefficient Order="3">-7.3320435e-13</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="5"><Coefficient Order="0">3.1033785</Coefficient>
+<Coefficient Order="1">1.00035</Coefficient>
+<Coefficient Order="2">6.2352714e-09</Coefficient>
+<Coefficient Order="3">-7.3320435e-13</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="5"><Coefficient Order="0">3.0992117</Coefficient>
+<Coefficient Order="1">1.0003495</Coefficient>
+<Coefficient Order="2">7.5344317e-09</Coefficient>
+<Coefficient Order="3">-7.0739942e-13</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="5"><Coefficient Order="0">3.1014202</Coefficient>
+<Coefficient Order="1">1.0003859</Coefficient>
+<Coefficient Order="2">6.8615322e-09</Coefficient>
+<Coefficient Order="3">-2.7191162e-12</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="11" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="14" MeasuringRange="10"><Coefficient Order="0">6.2095947</Coefficient>
+<Coefficient Order="1">1.0003514</Coefficient>
+<Coefficient Order="2">3.1915532e-09</Coefficient>
+<Coefficient Order="3">2.8744078e-13</Coefficient>
+</Data>
+<Data Channel="17" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="20" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="23" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="27" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="30" MeasuringRange="10"><Coefficient Order="0">6.2056789</Coefficient>
+<Coefficient Order="1">1.0003873</Coefficient>
+<Coefficient Order="2">3.5046681e-09</Coefficient>
+<Coefficient Order="3">-2.0937999e-13</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="0.1"><Coefficient Order="0">0.063508749</Coefficient>
+<Coefficient Order="1">1.0001351</Coefficient>
+<Coefficient Order="2">5.0213129e-07</Coefficient>
+<Coefficient Order="3">3.5676884e-09</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="0.1"><Coefficient Order="0">0.063565321</Coefficient>
+<Coefficient Order="1">1.0001445</Coefficient>
+<Coefficient Order="2">4.1065977e-07</Coefficient>
+<Coefficient Order="3">1.3186765e-09</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="0.1"><Coefficient Order="0">0.063069962</Coefficient>
+<Coefficient Order="1">1.000168</Coefficient>
+<Coefficient Order="2">4.4153336e-07</Coefficient>
+<Coefficient Order="3">-1.5725885e-09</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="0.1"><Coefficient Order="0">0.062514767</Coefficient>
+<Coefficient Order="1">1.0001351</Coefficient>
+<Coefficient Order="2">5.6511533e-07</Coefficient>
+<Coefficient Order="3">3.5664494e-09</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="0.1"><Coefficient Order="0">0.062383249</Coefficient>
+<Coefficient Order="1">1.0001421</Coefficient>
+<Coefficient Order="2">6.9626736e-07</Coefficient>
+<Coefficient Order="3">3.2467982e-09</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="0.1"><Coefficient Order="0">0.061861921</Coefficient>
+<Coefficient Order="1">1.0001515</Coefficient>
+<Coefficient Order="2">5.4179696e-07</Coefficient>
+<Coefficient Order="3">9.9716069e-10</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="0.1"><Coefficient Order="0">0.061449658</Coefficient>
+<Coefficient Order="1">1.0002078</Coefficient>
+<Coefficient Order="2">7.7448601e-07</Coefficient>
+<Coefficient Order="3">-7.0317867e-09</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="0.1"><Coefficient Order="0">0.062817484</Coefficient>
+<Coefficient Order="1">1.0001117</Coefficient>
+<Coefficient Order="2">5.1324565e-07</Coefficient>
+<Coefficient Order="3">6.4596151e-09</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="0.2"><Coefficient Order="0">0.12453124</Coefficient>
+<Coefficient Order="1">1.0001316</Coefficient>
+<Coefficient Order="2">2.9482075e-07</Coefficient>
+<Coefficient Order="3">-5.2682225e-10</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="0.2"><Coefficient Order="0">0.12313525</Coefficient>
+<Coefficient Order="1">1.0001316</Coefficient>
+<Coefficient Order="2">3.4408575e-07</Coefficient>
+<Coefficient Order="3">-5.2674898e-10</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="0.2"><Coefficient Order="0">0.12481399</Coefficient>
+<Coefficient Order="1">1.0000947</Coefficient>
+<Coefficient Order="2">2.9662255e-07</Coefficient>
+<Coefficient Order="3">8.8498331e-10</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="0.2"><Coefficient Order="0">0.12452853</Coefficient>
+<Coefficient Order="1">1.0001118</Coefficient>
+<Coefficient Order="2">2.9519228e-07</Coefficient>
+<Coefficient Order="3">3.5553793e-10</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="0.2"><Coefficient Order="0">0.12543593</Coefficient>
+<Coefficient Order="1">1.0001045</Coefficient>
+<Coefficient Order="2">2.6816997e-07</Coefficient>
+<Coefficient Order="3">4.4367363e-10</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="0.2"><Coefficient Order="0">0.12443965</Coefficient>
+<Coefficient Order="1">1.0001045</Coefficient>
+<Coefficient Order="2">2.7059144e-07</Coefficient>
+<Coefficient Order="3">4.4373621e-10</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="0.2"><Coefficient Order="0">0.12452662</Coefficient>
+<Coefficient Order="1">1.0000973</Coefficient>
+<Coefficient Order="2">2.9525711e-07</Coefficient>
+<Coefficient Order="3">5.3200072e-10</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="0.2"><Coefficient Order="0">0.1248167</Coefficient>
+<Coefficient Order="1">1.0001144</Coefficient>
+<Coefficient Order="2">2.9625039e-07</Coefficient>
+<Coefficient Order="3">2.5718403e-12</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="0.5"><Coefficient Order="0">0.3125025</Coefficient>
+<Coefficient Order="1">1.0002673</Coefficient>
+<Coefficient Order="2">1.2601254e-07</Coefficient>
+<Coefficient Order="3">9.0810921e-11</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="0.5"><Coefficient Order="0">0.31287852</Coefficient>
+<Coefficient Order="1">1.0002508</Coefficient>
+<Coefficient Order="2">1.1805104e-07</Coefficient>
+<Coefficient Order="3">1.9384976e-10</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="0.5"><Coefficient Order="0">0.31287852</Coefficient>
+<Coefficient Order="1">1.0002508</Coefficient>
+<Coefficient Order="2">1.1805104e-07</Coefficient>
+<Coefficient Order="3">1.9384976e-10</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="0.5"><Coefficient Order="0">0.31287852</Coefficient>
+<Coefficient Order="1">1.0002508</Coefficient>
+<Coefficient Order="2">1.1805104e-07</Coefficient>
+<Coefficient Order="3">1.9384976e-10</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="0.5"><Coefficient Order="0">0.31287852</Coefficient>
+<Coefficient Order="1">1.0002508</Coefficient>
+<Coefficient Order="2">1.1805104e-07</Coefficient>
+<Coefficient Order="3">1.9384976e-10</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="0.5"><Coefficient Order="0">0.31326219</Coefficient>
+<Coefficient Order="1">1.0002671</Coefficient>
+<Coefficient Order="2">1.0994351e-07</Coefficient>
+<Coefficient Order="3">9.1585343e-11</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="0.5"><Coefficient Order="0">0.31288618</Coefficient>
+<Coefficient Order="1">1.0002836</Coefficient>
+<Coefficient Order="2">1.1790503e-07</Coefficient>
+<Coefficient Order="3">-1.1438189e-11</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="0.5"><Coefficient Order="0">0.31336123</Coefficient>
+<Coefficient Order="1">1.0002602</Coefficient>
+<Coefficient Order="2">1.2012534e-07</Coefficient>
+<Coefficient Order="3">1.0446446e-10</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="1"><Coefficient Order="0">0.62380034</Coefficient>
+<Coefficient Order="1">1.0002025</Coefficient>
+<Coefficient Order="2">5.8420174e-08</Coefficient>
+<Coefficient Order="3">6.7589843e-11</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="1"><Coefficient Order="0">0.62285018</Coefficient>
+<Coefficient Order="1">1.0002259</Coefficient>
+<Coefficient Order="2">5.7310427e-08</Coefficient>
+<Coefficient Order="3">3.8607711e-11</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="1"><Coefficient Order="0">0.62285018</Coefficient>
+<Coefficient Order="1">1.0002259</Coefficient>
+<Coefficient Order="2">5.7310427e-08</Coefficient>
+<Coefficient Order="3">3.8607711e-11</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="1"><Coefficient Order="0">0.62285018</Coefficient>
+<Coefficient Order="1">1.0002259</Coefficient>
+<Coefficient Order="2">5.7310427e-08</Coefficient>
+<Coefficient Order="3">3.8607711e-11</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="1"><Coefficient Order="0">0.62285018</Coefficient>
+<Coefficient Order="1">1.0002259</Coefficient>
+<Coefficient Order="2">5.7310427e-08</Coefficient>
+<Coefficient Order="3">3.8607711e-11</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="1"><Coefficient Order="0">0.62380034</Coefficient>
+<Coefficient Order="1">1.0002025</Coefficient>
+<Coefficient Order="2">5.8420174e-08</Coefficient>
+<Coefficient Order="3">6.7589843e-11</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="1"><Coefficient Order="0">0.62304825</Coefficient>
+<Coefficient Order="1">1.000219</Coefficient>
+<Coefficient Order="2">6.2400964e-08</Coefficient>
+<Coefficient Order="3">4.1828568e-11</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="1"><Coefficient Order="0">0.62304825</Coefficient>
+<Coefficient Order="1">1.000219</Coefficient>
+<Coefficient Order="2">6.2400964e-08</Coefficient>
+<Coefficient Order="3">4.1828568e-11</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="2"><Coefficient Order="0">1.2513058</Coefficient>
+<Coefficient Order="1">1.0003121</Coefficient>
+<Coefficient Order="2">1.9932195e-08</Coefficient>
+<Coefficient Order="3">-6.7418575e-12</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="2"><Coefficient Order="0">1.2516568</Coefficient>
+<Coefficient Order="1">1.00023</Coefficient>
+<Coefficient Order="2">2.1101513e-08</Coefficient>
+<Coefficient Order="3">1.8626095e-11</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="2"><Coefficient Order="0">1.2516568</Coefficient>
+<Coefficient Order="1">1.00023</Coefficient>
+<Coefficient Order="2">2.1101513e-08</Coefficient>
+<Coefficient Order="3">1.8626095e-11</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="5"><Coefficient Order="0">3.1425595</Coefficient>
+<Coefficient Order="1">1.0003505</Coefficient>
+<Coefficient Order="2">6.2908669e-09</Coefficient>
+<Coefficient Order="3">-7.4103961e-13</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="5"><Coefficient Order="0">3.140578</Coefficient>
+<Coefficient Order="1">1.0003867</Coefficient>
+<Coefficient Order="2">6.9247159e-09</Coefficient>
+<Coefficient Order="3">-2.7517374e-12</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="5"><Coefficient Order="0">3.1425595</Coefficient>
+<Coefficient Order="1">1.0003505</Coefficient>
+<Coefficient Order="2">6.2908669e-09</Coefficient>
+<Coefficient Order="3">-7.4103961e-13</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="5"><Coefficient Order="0">3.1425595</Coefficient>
+<Coefficient Order="1">1.0003505</Coefficient>
+<Coefficient Order="2">6.2908669e-09</Coefficient>
+<Coefficient Order="3">-7.4103961e-13</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="5"><Coefficient Order="0">3.140578</Coefficient>
+<Coefficient Order="1">1.0003867</Coefficient>
+<Coefficient Order="2">6.9247159e-09</Coefficient>
+<Coefficient Order="3">-2.7517374e-12</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="5"><Coefficient Order="0">3.138093</Coefficient>
+<Coefficient Order="1">1.0003437</Coefficient>
+<Coefficient Order="2">6.5821824e-09</Coefficient>
+<Coefficient Order="3">-6.2163344e-13</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="5"><Coefficient Order="0">3.138093</Coefficient>
+<Coefficient Order="1">1.0003437</Coefficient>
+<Coefficient Order="2">6.5821824e-09</Coefficient>
+<Coefficient Order="3">-6.2163344e-13</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="5"><Coefficient Order="0">3.138093</Coefficient>
+<Coefficient Order="1">1.0003437</Coefficient>
+<Coefficient Order="2">6.5821824e-09</Coefficient>
+<Coefficient Order="3">-6.2163344e-13</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="12" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="18" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="21" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="25" MeasuringRange="10"><Coefficient Order="0">6.2053809</Coefficient>
+<Coefficient Order="1">1.0003793</Coefficient>
+<Coefficient Order="2">3.0443865e-09</Coefficient>
+<Coefficient Order="3">-1.6165593e-13</Coefficient>
+</Data>
+<Data Channel="28" MeasuringRange="10"><Coefficient Order="0">6.2058458</Coefficient>
+<Coefficient Order="1">1.0003725</Coefficient>
+<Coefficient Order="2">3.5533225e-09</Coefficient>
+<Coefficient Order="3">-1.3206663e-13</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="10" Type="AnalogOutput"><Coefficient Order="0">0.0019762889</Coefficient>
+<Coefficient Order="1">0.99810696</Coefficient>
+<Coefficient Order="2">-3.8396414e-05</Coefficient>
+<Coefficient Order="3">-2.4315611e-06</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="0.02" Type="AnalogOutput"><Coefficient Order="0">0.0056139342</Coefficient>
+<Coefficient Order="1">0.9990561</Coefficient>
+<Coefficient Order="2">-8.3537934e-06</Coefficient>
+<Coefficient Order="3">-1.5899756e-06</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="10" Type="AnalogOutput"><Coefficient Order="0">-0.0097365491</Coefficient>
+<Coefficient Order="1">0.99833572</Coefficient>
+<Coefficient Order="2">-5.4318007e-05</Coefficient>
+<Coefficient Order="3">3.092435e-06</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="0.02" Type="AnalogOutput"><Coefficient Order="0">-0.020665573</Coefficient>
+<Coefficient Order="1">0.99882442</Coefficient>
+<Coefficient Order="2">-2.2922686e-05</Coefficient>
+<Coefficient Order="3">3.0063515e-07</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="0.1"><Coefficient Order="0">-0.015089568</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="0.1"><Coefficient Order="0">0.065178946</Coefficient>
+<Coefficient Order="1">1.0002691</Coefficient>
+<Coefficient Order="2">5.1377691e-07</Coefficient>
+<Coefficient Order="3">-1.4544729e-08</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="0.2"><Coefficient Order="0">-0.044713445</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="0.2"><Coefficient Order="0">0.12706721</Coefficient>
+<Coefficient Order="1">1.0001184</Coefficient>
+<Coefficient Order="2">2.3892855e-07</Coefficient>
+<Coefficient Order="3">-2.9029945e-11</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="0.5"><Coefficient Order="0">-0.14860028</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="0.5"><Coefficient Order="0">0.31334752</Coefficient>
+<Coefficient Order="1">1.0002486</Coefficient>
+<Coefficient Order="2">1.1293364e-07</Coefficient>
+<Coefficient Order="3">2.0176484e-10</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="1"><Coefficient Order="0">-0.29521668</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="1"><Coefficient Order="0">0.62311846</Coefficient>
+<Coefficient Order="1">1.0002283</Coefficient>
+<Coefficient Order="2">6.7129569e-08</Coefficient>
+<Coefficient Order="3">3.431859e-11</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="2"><Coefficient Order="0">-0.60648686</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="2"><Coefficient Order="0">1.2350063</Coefficient>
+<Coefficient Order="1">1.0003003</Coefficient>
+<Coefficient Order="2">2.0267462e-08</Coefficient>
+<Coefficient Order="3">-3.2648727e-12</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="5"><Coefficient Order="0">-1.5692518</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="5"><Coefficient Order="0">3.1011992</Coefficient>
+<Coefficient Order="1">1.0003116</Coefficient>
+<Coefficient Order="2">6.7685568e-09</Coefficient>
+<Coefficient Order="3">1.3817005e-12</Coefficient>
+</Data>
+<Data Channel="15" MeasuringRange="10"><Coefficient Order="0">-3.1134548</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="10"><Coefficient Order="0">6.2089019</Coefficient>
+<Coefficient Order="1">1.0003501</Coefficient>
+<Coefficient Order="2">3.1824983e-09</Coefficient>
+<Coefficient Order="3">3.0169254e-13</Coefficient>
+</Data>
+<Data Channel="0" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99815458</Coefficient>
+</Data>
+<Data Channel="1" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">1.0011536</Coefficient>
+</Data>
+<Data Channel="2" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99924153</Coefficient>
+</Data>
+<Data Channel="3" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99947613</Coefficient>
+</Data>
+<Data Channel="4" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99873865</Coefficient>
+</Data>
+<Data Channel="5" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99835563</Coefficient>
+</Data>
+<Data Channel="6" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99901003</Coefficient>
+</Data>
+<Data Channel="7" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99848866</Coefficient>
+</Data>
+<Data Channel="8" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99824786</Coefficient>
+</Data>
+<Data Channel="9" MeasuringRange="0.00019999999" Type="CurrentSource"><Coefficient Order="1">0.99971998</Coefficient>
+</Data>
+</Adjustment>
+</Default>
