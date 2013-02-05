@@ -14,10 +14,10 @@ while ( read(*STDIN, $header, $header_size) ) {
 		read(*STDIN, $data, $length);
 		next if not $code == 128;
 		my (@t) = unpack("(VV)*", $data);
-		for (my $i = 0; $i < scalar @t; $i+=2) {#			print $x;
+		for (my $i = 0; $i < scalar @t; $i+=2) {
 			my $value = ($t[$i+1] >> 0) & (1 << 26) - 1;
 			my $chan = ($t[$i+1] >> 27) & (1 << 5) -1;
-			printf("%2d %9d %9d %s\n", $chan, $t[$i], $value, unpack("b32", pack("V", $t[$i+1])));
+			printf("%08x%08x %2d %9d %08x %8d %s\n", $t[$i],$t[$i+1], $chan, $t[$i], $value, $value, unpack("b32", pack("N", $t[$i+1])));
 			$lines ++;
 		}
 	}
