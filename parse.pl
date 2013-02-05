@@ -14,13 +14,16 @@ while ( read(*STDIN, $header, $header_size) ) {
 		read(*STDIN, $data, $length);
 		next if not $code == 128;
 #		my @f = unpack("(b18)*", $data);
-		my @f = unpack("(h4)*", $data);
+#		my @f = unpack("(h4)*", $data);
+		my (@t) = unpack("(Vf)*", $data);
+#		print @t, "\n";
 #		printf("%5d %2d %5d (%2d): ", $code, $length, $sequence, scalar @f);
-		foreach my $x (@f) {
-			print $x;
+		for (my $i = 0; $i < scalar @t; $i+=2) {
+#			print $x;
 		#	printf("%20s", $x)
 #			printf("%10s ", unpack("h*",$x));
 #			printf("%10d", unpack("V", $x))
+			printf("%10d %15.1f ", $t[$i], $t[$i+1]);
 		}
 #		printf("%s", unpack("h".$length*2, $data));
 		print "\n";
