@@ -187,20 +187,31 @@ func valueBuffer(cin chan DelphinChannelValue) {
 //Correct Timestamp and Engineering Value
 func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
 	t0 := uint64(0)
+	t1 := uint64(0)
+	td := uint64(0)
 	var at0 time.Time
 	for {
 		v := <-cin
 
 		//Calculate and Adjust Engineering value
 		v.EngValue = adjustValue(float64(float64(v.RawValue)/RAW_MAX)*ENG_MAX, v.Channel)
-		
-		if t0 == 0 || t0 > (uint64(v.Timestamp) * 1000) { //Init or Rollover
-			t0 = uint64(v.Timestamp) * 1000
-			at0 = time.Now()
+
+		//Convert timestamp to Absolute timestamp
+		//Note: This tilstamp can be sligltly in the future. (<100ms) 
+		//The timstamp relative to other mesurements is more important	
+		t1 = uint64(v.Timestamp) * 1000 //Microseconds to Nanoseconds	
+
+		//Init or Rollover
+		if t0 == 0 || t1 < t0 {
+//			at0 = time.Now(o)
+			at0 = v.PacketTime
+			t0 = t1
+			td = 0
+		} else {
+			td = t1 - t0
 		}
-		
-		v.Abstimestamp = at0.Add(time.Duration((uint64(v.Timestamp)*1000) - t0))
-		foo++
+
+		v.Abstimestamp = at0.Add(time.Duration(td))
 		cout <- v
 	}
 }
