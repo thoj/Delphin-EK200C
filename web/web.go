@@ -203,8 +203,8 @@ func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
 
 		//Init or Rollover
 		if t0 == 0 || t1 < t0 {
-//			at0 = time.Now(o)
-			at0 = v.PacketTime
+			at0 = time.Now()
+//			at0 = v.PacketTime
 			t0 = t1
 			td = 0
 		} else {
