@@ -67,8 +67,6 @@ type DelphinHeader struct {
 }
 
 type DelphinChannelValue struct {
-	MesNumber    uint32 //Mesuremnt number in packet
-	Offset    uint32 //Mesuremnt number in packet
 	PacketTime   time.Time
 	Timestamp    uint32
 	Abstimestamp time.Time
@@ -154,8 +152,6 @@ func main() {
 		}
 		if head.Com == 128 { // Channel Data
 			databuf := bytes.NewBuffer(data)
-			mesnumber := uint32(head.Len/8) 
-			offset := uint32(head.Len/8/28)
 			for databuf.Len() > 0 {
 
 				var timestamp uint32
@@ -168,12 +164,6 @@ func main() {
 				chvalue.Channel = uint8((chanvalue >> 27) & ((1 << 5) - 1))
 				chvalue.RawValue = chanvalue & ((1 << 23) - 1)
 				chvalue.RawValue = chvalue.RawValue << 9
-				if chvalue.Channel == 0 {
-					offset--
-				}
-				mesnumber--
-				chvalue.MesNumber = mesnumber
-				chvalue.Offset = offset
 				chvalue.PacketTime = ptime
 				value_calc <- chvalue
 			}
@@ -187,8 +177,8 @@ func valueBuffer(cin chan DelphinChannelValue) {
 	for {
 		v := <-cin
 		last[v.Channel] = v.EngValue
-		if v.Channel == 0 || v.Channel == 1 || v.Channel == 2{
-			fmt.Printf("%d %35s: %5.2f (%7s) %d\n", v.Timestamp, v.Abstimestamp, v.EngValue, v.Abstimestamp.Sub(v0.Abstimestamp), v.MesNumber)
+		if v.Channel == 5 {
+			fmt.Printf("%10d %45s: %9.2f (%7s) %d %s\n", v.Timestamp, v.Abstimestamp, v.EngValue, v.Abstimestamp.Sub(v0.Abstimestamp), v.Channel, v.Abstimestamp.Sub(time.Now()))
 			v0 = v
 		}
 	}
@@ -196,30 +186,20 @@ func valueBuffer(cin chan DelphinChannelValue) {
 
 //Correct Timestamp and Engineering Value
 func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
-	ct0 := make(map[uint8]uint32)
-	t0 := uint32(0)
+	t0 := uint64(0)
+	var at0 time.Time
 	for {
 		v := <-cin
 
 		//Calculate and Adjust Engineering value
 		v.EngValue = adjustValue(float64(float64(v.RawValue)/RAW_MAX)*ENG_MAX, v.Channel)
-
-		//Calculate Absolute Timestamp
-		ctd := uint64(9991) //Default for 100Hz
-		//td := uint64(333) //Default for 100Hz
-		if ct0[v.Channel] > 0 {
-			ctd = uint64(v.Timestamp-ct0[v.Channel])
+		
+		if t0 == 0 || t0 > (uint64(v.Timestamp) * 1000) { //Init or Rollover
+			t0 = uint64(v.Timestamp) * 1000
+			at0 = time.Now()
 		}
-		if t0 > 0 {
-	//		td = (uint64(v.Timestamp-t0) * uint64(v.Offset)  * 1000)
-		}
-		ctdd := ((ctd * uint64(v.Offset)) * 1000)
-		if v.Channel == 0  { //|| v.Channel == 1 {
-//			fmt.Printf("%d %d %d %d\n", v.Timestamp, td, ctd, v.Offset)
-		}
-		v.Abstimestamp = v.PacketTime.Add(-time.Duration(ctdd))
-		ct0[v.Channel] = v.Timestamp
-		t0 = v.Timestamp
+		
+		v.Abstimestamp = at0.Add(time.Duration((uint64(v.Timestamp)*1000) - t0))
 		foo++
 		cout <- v
 	}
