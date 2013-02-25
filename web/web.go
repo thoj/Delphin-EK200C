@@ -68,6 +68,7 @@ type DelphinHeader struct {
 
 type DelphinChannelValue struct {
 	MesNumber    uint32 //Mesuremnt number in packet
+	Offset    uint32 //Mesuremnt number in packet
 	PacketTime   time.Time
 	Timestamp    uint32
 	Abstimestamp time.Time
@@ -153,7 +154,8 @@ func main() {
 		}
 		if head.Com == 128 { // Channel Data
 			databuf := bytes.NewBuffer(data)
-			mesnumber := uint32(head.Len/8) - 1
+			mesnumber := uint32(head.Len/8) 
+			offset := uint32(head.Len/8/28)
 			for databuf.Len() > 0 {
 
 				var timestamp uint32
@@ -166,8 +168,12 @@ func main() {
 				chvalue.Channel = uint8((chanvalue >> 27) & ((1 << 5) - 1))
 				chvalue.RawValue = chanvalue & ((1 << 23) - 1)
 				chvalue.RawValue = chvalue.RawValue << 9
-				chvalue.MesNumber = mesnumber
+				if chvalue.Channel == 0 {
+					offset--
+				}
 				mesnumber--
+				chvalue.MesNumber = mesnumber
+				chvalue.Offset = offset
 				chvalue.PacketTime = ptime
 				value_calc <- chvalue
 			}
@@ -181,7 +187,7 @@ func valueBuffer(cin chan DelphinChannelValue) {
 	for {
 		v := <-cin
 		last[v.Channel] = v.EngValue
-		if v.Channel == 5 || v.Channel == 4 {
+		if v.Channel == 0 || v.Channel == 1 || v.Channel == 2{
 			fmt.Printf("%d %35s: %5.2f (%7s) %d\n", v.Timestamp, v.Abstimestamp, v.EngValue, v.Abstimestamp.Sub(v0.Abstimestamp), v.MesNumber)
 			v0 = v
 		}
@@ -190,6 +196,7 @@ func valueBuffer(cin chan DelphinChannelValue) {
 
 //Correct Timestamp and Engineering Value
 func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
+	ct0 := make(map[uint8]uint32)
 	t0 := uint32(0)
 	for {
 		v := <-cin
@@ -198,12 +205,20 @@ func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
 		v.EngValue = adjustValue(float64(float64(v.RawValue)/RAW_MAX)*ENG_MAX, v.Channel)
 
 		//Calculate Absolute Timestamp
-		td := uint64(333) //Default for 100Hz
-		if t0 > 0 {
-			td = uint64(v.Timestamp-t0)
+		ctd := uint64(9991) //Default for 100Hz
+		//td := uint64(333) //Default for 100Hz
+		if ct0[v.Channel] > 0 {
+			ctd = uint64(v.Timestamp-ct0[v.Channel])
 		}
-		tdd := ((td+24) * uint64(v.MesNumber)) * 1000 //Less Jitter with 25 extra microseconds... no idea why.
-		v.Abstimestamp = v.PacketTime.Add(-time.Duration(tdd))
+		if t0 > 0 {
+	//		td = (uint64(v.Timestamp-t0) * uint64(v.Offset)  * 1000)
+		}
+		ctdd := ((ctd * uint64(v.Offset)) * 1000)
+		if v.Channel == 0  { //|| v.Channel == 1 {
+//			fmt.Printf("%d %d %d %d\n", v.Timestamp, td, ctd, v.Offset)
+		}
+		v.Abstimestamp = v.PacketTime.Add(-time.Duration(ctdd))
+		ct0[v.Channel] = v.Timestamp
 		t0 = v.Timestamp
 		foo++
 		cout <- v
