@@ -73,6 +73,7 @@ type DelphinChannelValue struct {
 	Channel      uint8
 	RawValue     int32   //Raw Value 
 	EngValue     float64 //Engineering value
+	Last         bool
 }
 type DelphinRawData struct {
 	Timestamp uint32
@@ -108,11 +109,10 @@ func DelphinStreamer(cd chan DelphinChannelData) {
 */
 
 func main() {
-	conn, err := net.Dial("tcp", "192.168.251.252:1034")
-
 	//Queues
 	value_calc := make(chan DelphinChannelValue, 100)   //Value calculations
 	value_buffer := make(chan DelphinChannelValue, 100) //Value buffer
+	conn, err := net.Dial("tcp", "192.168.251.252:1034")
 
 	if err != nil {
 		fmt.Printf("%s", err)
@@ -157,7 +157,9 @@ func main() {
 				var timestamp uint32
 				var chanvalue int32
 				var chvalue DelphinChannelValue
-
+				if databuf.Len() == 8 {
+					chvalue.Last = true
+				}
 				binary.Read(databuf, binary.LittleEndian, &timestamp)
 				binary.Read(databuf, binary.LittleEndian, &chanvalue)
 				chvalue.Timestamp = timestamp
@@ -186,10 +188,11 @@ func valueBuffer(cin chan DelphinChannelValue) {
 
 //Correct Timestamp and Engineering Value
 func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
-	t0 := uint64(0)
-	t1 := uint64(0)
+	ts0 := uint32(0)
 	td := uint64(0)
+	sync := true
 	var at0 time.Time
+	i := 0
 	for {
 		v := <-cin
 
@@ -197,22 +200,37 @@ func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
 		v.EngValue = adjustValue(float64(float64(v.RawValue)/RAW_MAX)*ENG_MAX, v.Channel)
 
 		//Convert timestamp to Absolute timestamp
-		//Note: This tilstamp can be sligltly in the future. (<100ms) 
+		//Note: This tilstamp can be sligltly in the future. (100ms) 
 		//The timstamp relative to other mesurements is more important	
-		t1 = uint64(v.Timestamp) * 1000 //Microseconds to Nanoseconds	
+		//There is about 70ms drift over an hour on my unit. 
+		//Sync every 100k mesurments, this causes some jitter due to network latency (+-1ms)
+		//Somekind of incremental adjustment would be better 
 
-		//Init or Rollover
-		if t0 == 0 || t1 < t0 {
-			at0 = time.Now()
-//			at0 = v.PacketTime
-			t0 = t1
+		if sync {
+			sync = false
+			at0 = v.PacketTime
 			td = 0
-		} else {
-			td = t1 - t0
+			ts0 = v.Timestamp
 		}
 
-		v.Abstimestamp = at0.Add(time.Duration(td))
+		if ts0 > v.Timestamp {
+			td += (1 << 32) - uint64(ts0)
+			td += uint64(v.Timestamp)
+			ts0 = v.Timestamp
+		} else {
+			td += uint64(v.Timestamp - ts0)
+			ts0 = v.Timestamp
+		}
+		v.Abstimestamp = at0.Add(time.Duration(td * 1000))
 		cout <- v
+
+		if i > 100000 {
+			if v.Last {
+				sync = true
+				i = 0
+			}
+		}
+		i++
 	}
 }
 
