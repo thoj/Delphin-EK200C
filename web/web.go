@@ -39,6 +39,7 @@ package main
 
 import (
 	"bytes"
+	"container/ring"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -50,9 +51,9 @@ const (
 	RAW_MAX = 2084935581 //2**32/1.03/2 (Signed)
 	ENG_MAX = 10000
 	ENG_MIN = -10000
-)
 
-var foo int
+	BUFFER_SIZE = 10000 //100 Sec at 100Hz
+)
 
 type DelphinHeader struct {
 	Ver int16
@@ -66,141 +67,56 @@ type DelphinHeader struct {
 	HeaderCheck int32
 }
 
-type DelphinChannelValue struct {
-	PacketTime   time.Time
-	Timestamp    uint32
-	Abstimestamp time.Time
-	Channel      uint8
-	RawValue     int32   //Raw Value 
-	EngValue     float64 //Engineering value
-	Last         bool
-}
 type DelphinRawData struct {
 	Timestamp uint32
 	ChanValue int32 //Channel (6bit) + Value (26bit @ 1hz, 22 bit @ 50Hz)
 }
 
+//Raw data value and raw metadata
 type DelphinChannelData struct {
-	Timestamp int64
-	Rawvalue  int64
-	Engvalue  float64
+	PacketTime time.Time
+	Timestamp  uint32
+	Channel    uint8
+	RawValue   int32 //Raw 
+	Last       bool
 }
 
-// Comunication with module
-/*
-func DelphinStreamer(cd chan DelphinChannelData) {
-	request := []byte{0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xf8, 0xfb, 0x0a}
-	for {
-		conn, err := net.Dial("tcp", "192.168.251.252:1034")
-		if err != nil {
-			fmt.Printf("%s", err)
-			continue
-		}
-		fmt.Printf("Connected...\n")
-		_, err = conn.Write(request)
-		if err != nil {
-			fmt.Printf("Write error...%s\n", err)
-			conn.Close()
-			continue
-		}
-
-	}
-}
-*/
-
-func main() {
-	//Queues
-	value_calc := make(chan DelphinChannelValue, 100)   //Value calculations
-	value_buffer := make(chan DelphinChannelValue, 100) //Value buffer
-	conn, err := net.Dial("tcp", "192.168.251.252:1034")
-
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
-	fmt.Printf("Connected...\n")
-
-	request := &DelphinHeader{2, 0x2a, 0x08, 0, 0, 0, 0}
-	binary.Write(conn, binary.BigEndian, request)
-	conn.Write([]byte{0x03, 0x01, 0x00, 0x13, 0x00, 0x02, 0x00, 0x00}) // Init
-	readPacket(conn)
-	request = &DelphinHeader{2, 0x01, 0, 0, 0, 0, 0}
-	binary.Write(conn, binary.BigEndian, request)
-	readPacket(conn)
-
-	go func() {
-		t := time.NewTicker(time.Second)
-		for {
-			syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, 0, 0, 0}
-			tn := time.Now()
-			binary.Write(conn, binary.BigEndian, syncreq)
-			conn.Write([]byte{0, 0, 0, 0})
-			binary.Write(conn, binary.BigEndian, tn.UnixNano())
-			foo = 0
-
-			<-t.C
-		}
-	}()
-	go valueCalc(value_calc, value_buffer) // Send calculated values to buffer
-	go valueBuffer(value_buffer)           // Buffer Storage
-	for {
-		head, data, err := readPacket(conn)
-		ptime := time.Now()
-		if err != nil {
-			fmt.Printf("%s\n", err)
-			return
-		}
-		if head.Com == 128 { // Channel Data
-			databuf := bytes.NewBuffer(data)
-			for databuf.Len() > 0 {
-
-				var timestamp uint32
-				var chanvalue int32
-				var chvalue DelphinChannelValue
-				if databuf.Len() == 8 {
-					chvalue.Last = true
-				}
-				binary.Read(databuf, binary.LittleEndian, &timestamp)
-				binary.Read(databuf, binary.LittleEndian, &chanvalue)
-				chvalue.Timestamp = timestamp
-				chvalue.Channel = uint8((chanvalue >> 27) & ((1 << 5) - 1))
-				chvalue.RawValue = chanvalue & ((1 << 23) - 1)
-				chvalue.RawValue = chvalue.RawValue << 9
-				chvalue.PacketTime = ptime
-				value_calc <- chvalue
-			}
-		}
-	}
+//Useful information
+type ChannelData struct {
+	Channel   uint8
+	Timestamp time.Time
+	Value     float64
 }
 
-func valueBuffer(cin chan DelphinChannelValue) {
-	last := make(map[uint8]float64)
-	var v0 DelphinChannelValue
+// Keep updated rolling valuie buffer
+func valueBuffer(cin chan ChannelData, buffers []*ring.Ring) {
 	for {
 		v := <-cin
-		last[v.Channel] = v.EngValue
-		if v.Channel == 5 {
-			fmt.Printf("%10d %45s: %9.2f (%7s) %d %s\n", v.Timestamp, v.Abstimestamp, v.EngValue, v.Abstimestamp.Sub(v0.Abstimestamp), v.Channel, v.Abstimestamp.Sub(time.Now()))
-			v0 = v
+		if buffers[v.Channel] == nil {
+			buffers[v.Channel] = ring.New(BUFFER_SIZE)
 		}
+		buffers[v.Channel] = buffers[v.Channel].Next()
+		buffers[v.Channel].Value = v
 	}
 }
 
 //Correct Timestamp and Engineering Value
-func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
+func valueCalc(cin chan DelphinChannelData, cout chan ChannelData) {
 	ts0 := uint32(0)
 	td := uint64(0)
 	sync := true
 	var at0 time.Time
-	i := 0
+	m := 0
 	for {
-		v := <-cin
+		i := <-cin
+
+		o := ChannelData{}
 
 		//Calculate and Adjust Engineering value
-		v.EngValue = adjustValue(float64(float64(v.RawValue)/RAW_MAX)*ENG_MAX, v.Channel)
+		o.Value = adjustValue(float64(float64(i.RawValue)/RAW_MAX)*ENG_MAX, i.Channel)
 
 		//Convert timestamp to Absolute timestamp
-		//Note: This tilstamp can be sligltly in the future. (100ms) 
+		//Note: This timestamp can be sligltly in the future. (100ms) 
 		//The timstamp relative to other mesurements is more important	
 		//There is about 70ms drift over an hour on my unit. 
 		//Sync every 100k mesurments, this causes some jitter due to network latency (+-1ms)
@@ -208,29 +124,30 @@ func valueCalc(cin chan DelphinChannelValue, cout chan DelphinChannelValue) {
 
 		if sync {
 			sync = false
-			at0 = v.PacketTime
+			at0 = i.PacketTime
 			td = 0
-			ts0 = v.Timestamp
+			ts0 = i.Timestamp
 		}
 
-		if ts0 > v.Timestamp {
+		if ts0 > i.Timestamp {
 			td += (1 << 32) - uint64(ts0)
-			td += uint64(v.Timestamp)
-			ts0 = v.Timestamp
+			td += uint64(i.Timestamp)
+			ts0 = i.Timestamp
 		} else {
-			td += uint64(v.Timestamp - ts0)
-			ts0 = v.Timestamp
+			td += uint64(i.Timestamp - ts0)
+			ts0 = i.Timestamp
 		}
-		v.Abstimestamp = at0.Add(time.Duration(td * 1000))
-		cout <- v
+		o.Timestamp = at0.Add(time.Duration(td * 1000))
+		o.Channel = i.Channel
+		cout <- o
 
-		if i > 100000 {
-			if v.Last {
+		if m > 100000 {
+			if i.Last {
 				sync = true
-				i = 0
+				m = 0
 			}
 		}
-		i++
+		m++
 	}
 }
 
@@ -259,4 +176,94 @@ func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
 		return header, buf, nil
 	}
 	return header, nil, nil
+}
+
+func main() {
+
+	//Queues
+	calc_chan := make(chan DelphinChannelData, 100) //Value calculations
+	buffer_chan := make(chan ChannelData, 100)      //Value buffer
+
+	conn, err := net.Dial("tcp", "192.168.251.252:1034")
+	if err != nil {
+		fmt.Printf("%s", err)
+		return
+	}
+	fmt.Printf("Connected...\n")
+
+	request := &DelphinHeader{2, 0x2a, 0x08, 0, 0, 0, 0}
+	binary.Write(conn, binary.BigEndian, request)
+	conn.Write([]byte{0x03, 0x01, 0x00, 0x13, 0x00, 0x02, 0x00, 0x00}) // Init
+	readPacket(conn)
+	request = &DelphinHeader{2, 0x01, 0, 0, 0, 0, 0}
+	binary.Write(conn, binary.BigEndian, request)
+	readPacket(conn)
+
+	//Send "Ping" Packets
+	go func() {
+		t := time.NewTicker(time.Second)
+		for {
+			syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, 0, 0, 0}
+			tn := time.Now()
+			binary.Write(conn, binary.BigEndian, syncreq)
+			conn.Write([]byte{0, 0, 0, 0})
+			binary.Write(conn, binary.BigEndian, tn.UnixNano())
+			<-t.C
+		}
+	}()
+
+	value_buffer := make([]*ring.Ring, 31)    //Should be faster and smaller then a map
+	go valueCalc(calc_chan, buffer_chan)      // Send calculated values to buffer
+	go valueBuffer(buffer_chan, value_buffer) // Buffer Storage
+
+	//Print the 25 last values for channel 5.. Just testing.
+	go func() {
+		t := time.NewTicker(100 * time.Millisecond)
+		for {
+			if value_buffer[5] != nil {
+				r := value_buffer[5]
+				for i := 0; i < 25; i++ {
+					if r.Value != nil {
+						fmt.Printf("%8.2f", r.Value.(ChannelData).Value)
+						r = r.Prev()
+					} else {
+						break
+					}
+
+				}
+				fmt.Printf("\n")
+			}
+			<-t.C
+		}
+	}()
+
+	for {
+		head, data, err := readPacket(conn)
+		ptime := time.Now()
+		if err != nil {
+			fmt.Printf("%s\n", err)
+			return
+		}
+		if head.Com == 128 { // Channel Data
+			databuf := bytes.NewBuffer(data)
+			for databuf.Len() > 0 {
+
+				var timestamp uint32
+				var chanvalue int32
+				var chvalue DelphinChannelData
+				if databuf.Len() == 8 {
+					chvalue.Last = true
+				}
+				binary.Read(databuf, binary.LittleEndian, &timestamp)
+				binary.Read(databuf, binary.LittleEndian, &chanvalue)
+				chvalue.Timestamp = timestamp
+				chvalue.Channel = uint8((chanvalue >> 27) & ((1 << 5) - 1))
+				chvalue.RawValue = chanvalue & ((1 << 23) - 1)
+				chvalue.RawValue = chvalue.RawValue << 9
+				chvalue.PacketTime = ptime
+				calc_chan <- chvalue
+			}
+			databuf.Reset()
+		}
+	}
 }
