@@ -8,8 +8,8 @@
 //NOTE: The unit ignores header and data CRCs.
 //&DelphinHeader{2,0x01,0,0,0,0,0} //Request streaming data
 //&DelphinHeader{2,0x44,0,0,0,0,0} //Request unit information
-//&DelphinHeader{2,0x48,0,0,0,0,0} //Request calib info
-//&DelphinHeader{2,0x40,0,0,0,0,0} //Request calib info (Base64 Encoded?)
+//&DelphinHeader{2,0x40,0,0,0,0,0} //Request calib info
+//&DelphinHeader{2,0x48,0,0,0,0,0} //Request calib info (Base64 Encoded?)
 
 //&DelphinHeader{2,0x50,0,0,0,0,0} //No idea what this returns. Maybe chan info.
 
@@ -101,7 +101,7 @@ func valueBuffer(cin chan ChannelData, buffers []*ring.Ring) {
 }
 
 //Correct Timestamp and Engineering Value
-func valueCalc(cin chan DelphinChannelData, cout chan ChannelData) {
+func valueCalc(cin chan DelphinChannelData, cout chan ChannelData, adj []AdjustmentTable) {
 	ts0 := uint32(0)
 	td := uint64(0)
 	sync := true
@@ -113,7 +113,7 @@ func valueCalc(cin chan DelphinChannelData, cout chan ChannelData) {
 		o := ChannelData{}
 
 		//Calculate and Adjust Engineering value
-		o.Value = adjustValue(float64(float64(i.RawValue)/RAW_MAX)*ENG_MAX, i.Channel)
+		o.Value = adjustValue(float64(float64(i.RawValue)/RAW_MAX)*ENG_MAX, adj[i.Channel])
 
 		//Convert timestamp to Absolute timestamp
 		//Note: This timestamp can be sligltly in the future. (100ms) 
@@ -151,10 +151,18 @@ func valueCalc(cin chan DelphinChannelData, cout chan ChannelData) {
 	}
 }
 
-// ADC Correction curve
-//TODO: get constatns from adj table!! this is only for channel 5!!
-func adjustValue(v float64, c uint8) float64 {
-	return 6.2053809 + 1.000379*v + 3.0443865*math.Pow10(-9)*math.Pow(v, 2) - 1.6165593*math.Pow10(-13)*math.Pow(v, 3)
+// ADC Correction
+func adjustValue(v float64, adj AdjustmentTable) float64 {
+	if adj.Orders == 4 {
+		return adj.Order[0] + adj.Order[1]*v + adj.Order[2]*math.Pow10(-9)*math.Pow(v, 2) + adj.Order[3]*math.Pow10(-13)*math.Pow(v, 3)
+	} else if adj.Orders == 3 {
+		return adj.Order[0] + adj.Order[1]*v + adj.Order[2]*math.Pow10(-9)*math.Pow(v, 2)
+	} else if adj.Orders == 2 {
+		return adj.Order[0] + adj.Order[1]*v
+	} else if adj.Orders == 1 {
+		return adj.Order[0] + v
+	}
+	return v
 }
 
 func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
@@ -163,7 +171,6 @@ func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
 	if err != nil {
 		return header, nil, err
 	}
-	//	fmt.Printf("%#v\n", header)
 	if header.Len > 0 {
 		buf := make([]byte, header.Len)
 		for nn := int32(0); nn < header.Len; {
@@ -191,30 +198,34 @@ func main() {
 	}
 	fmt.Printf("Connected...\n")
 
+	//Send initial request for Init, Calib Data and Streaming
 	request := &DelphinHeader{2, 0x2a, 0x08, 0, 0, 0, 0}
 	binary.Write(conn, binary.BigEndian, request)
 	conn.Write([]byte{0x03, 0x01, 0x00, 0x13, 0x00, 0x02, 0x00, 0x00}) // Init
-	readPacket(conn)
-	request = &DelphinHeader{2, 0x01, 0, 0, 0, 0, 0}
+	request = &DelphinHeader{2, 0x48, 0x00, 0, 2, 0, 0}
 	binary.Write(conn, binary.BigEndian, request)
-	readPacket(conn)
+	request = &DelphinHeader{2, 0x01, 0, 0, 3, 0, 0}
+	binary.Write(conn, binary.BigEndian, request)
 
 	//Send "Ping" Packets
 	go func() {
 		t := time.NewTicker(time.Second)
+		i := int32(4)
 		for {
-			syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, 0, 0, 0}
+			syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, i, 0, 0}
 			tn := time.Now()
 			binary.Write(conn, binary.BigEndian, syncreq)
 			conn.Write([]byte{0, 0, 0, 0})
 			binary.Write(conn, binary.BigEndian, tn.UnixNano())
+			i++
 			<-t.C
 		}
 	}()
 
-	value_buffer := make([]*ring.Ring, 31)    //Should be faster and smaller then a map
-	go valueCalc(calc_chan, buffer_chan)      // Send calculated values to buffer
-	go valueBuffer(buffer_chan, value_buffer) // Buffer Storage
+	value_buffer := make([]*ring.Ring, 31)          //Should be faster and smaller then a map
+	adj_table := make([]AdjustmentTable, 31)        //Should be faster and smaller then a map
+	go valueCalc(calc_chan, buffer_chan, adj_table) // Send calculated values to buffer
+	go valueBuffer(buffer_chan, value_buffer)       // Buffer Storage
 
 	//Print the 25 last values for channel 5.. Just testing.
 	go func() {
@@ -244,7 +255,8 @@ func main() {
 			fmt.Printf("%s\n", err)
 			return
 		}
-		if head.Com == 128 { // Channel Data
+		switch {
+		case head.Com == 128: // Channel Data
 			databuf := bytes.NewBuffer(data)
 			for databuf.Len() > 0 {
 
@@ -264,6 +276,20 @@ func main() {
 				calc_chan <- chvalue
 			}
 			databuf.Reset()
+		case head.Com == -32696: //Calib Data
+			calib, err := NewCalibration(data[4:])
+			if err != nil {
+				fmt.Printf("%s\n", err)
+			}
+			calib.AdjustmentTable(10, adj_table)
+			fmt.Printf("New adjustment table:\n%3s %16s %16s %16s %16s\n", "Chan", "Order0", "Order1", "Order2", "Order3")
+			for v, _ := range adj_table {
+				fmt.Printf("%3d ", v)
+				for _, w := range adj_table[v].Order {
+					fmt.Printf("%16e ", w)
+				}
+				fmt.Printf("\n")
+			}
 		}
 	}
 }
