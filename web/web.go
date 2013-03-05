@@ -7,12 +7,12 @@
 package main
 
 import (
-	"fmt"
-	"time"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"strconv"
-	"log"
+	"time"
 )
 
 func httpserver(d *DelphinReceiver) {
@@ -28,13 +28,13 @@ func httpserver(d *DelphinReceiver) {
 			data := make([]interface{}, 0, requested_values)
 			e := d.ValueBufferFiltered[ch]
 			for i := 0; i < requested_values && e.Value != nil; i++ {
-				data = append(data, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano() / 1000 / 1000), int64(e.Value.(ChannelData).Value+0.5)})
+				data = append(data, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano() / 1000 / 1000), int64(e.Value.(ChannelData).Value + 0.5)})
 				e = e.Prev()
 			}
 			enc.Encode(map[string]interface{}{"values": data, "error": false})
 			data = nil
 		} else {
-			enc.Encode(map[string]interface{}{"error": true, "error_msg": "No channel defined", "error_num":440})
+			enc.Encode(map[string]interface{}{"error": true, "error_msg": "No channel defined", "error_num": 440})
 		}
 	})
 	http.HandleFunc("/json/fast", func(w http.ResponseWriter, r *http.Request) {
