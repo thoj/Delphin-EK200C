@@ -67,6 +67,10 @@ type DelphinReceiver struct {
 
 	at0 time.Time
 	ts0 uint32
+
+	connected  bool
+	sequencenr int32
+	conn net.Conn
 }
 
 type DelphinHeader struct {
@@ -106,13 +110,11 @@ type ChannelData struct {
 // Keep updated rolling value buffer with filtered values
 func valueBuffer(d *DelphinReceiver) {
 	r := make([]int, 31)
+	for i := 0; i < 31; i++ {
+		d.ValueBufferRaw[i] = ring.New(BUFFER_SIZE)
+	}
 	for {
 		v := <-d.buffer_chan
-
-		//The ring buffer should be allocated outside the loop!
-		if d.ValueBufferRaw[v.Channel] == nil {
-			d.ValueBufferRaw[v.Channel] = ring.New(BUFFER_SIZE)
-		}
 
 		//Move head forwards
 		d.ValueBufferRaw[v.Channel] = d.ValueBufferRaw[v.Channel].Next()
@@ -222,52 +224,35 @@ func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
 	return header, nil, nil
 }
 
-//Start streaming data from Delphin device. Returns only on error.
-func (d *DelphinReceiver) Start() {
+//Send initial request for Init, Calib Data and Streaming
+func (d *DelphinReceiver) postConnect() {
+	request := &DelphinHeader{2, 0x2a, 0x08, 0, 0, 0, 0}
+	binary.Write(d.conn, binary.BigEndian, request)
+	d.conn.Write([]byte{0x03, 0x01, 0x00, 0x13, 0x00, 0x02, 0x00, 0x00}) // Init
+	request = &DelphinHeader{2, 0x48, 0x00, 0, 2, 0, 0}
+	binary.Write(d.conn, binary.BigEndian, request)
+	request = &DelphinHeader{2, 0x01, 0, 0, 3, 0, 0}
+	binary.Write(d.conn, binary.BigEndian, request)
+	d.connected = true
+	d.sequencenr = int32(4)
+}
+
+func (d *DelphinReceiver) connectDelphin() {
 	fmt.Printf("Connecting to %s...\n", d.addr)
-	conn, err := net.Dial("tcp", d.addr)
+	var err error
+	d.conn, err = net.Dial("tcp", d.addr)
 	if err != nil {
 		fmt.Printf("%s", err)
 		return
 	}
 	fmt.Printf("Connected...\n")
+	d.postConnect()
+}
 
-	d.calc_chan = make(chan DelphinChannelData, 100) //Value calculations
-	d.buffer_chan = make(chan ChannelData, 100)      //Value buffer
-
-	//Send initial request for Init, Calib Data and Streaming
-	request := &DelphinHeader{2, 0x2a, 0x08, 0, 0, 0, 0}
-	binary.Write(conn, binary.BigEndian, request)
-	conn.Write([]byte{0x03, 0x01, 0x00, 0x13, 0x00, 0x02, 0x00, 0x00}) // Init
-	request = &DelphinHeader{2, 0x48, 0x00, 0, 2, 0, 0}
-	binary.Write(conn, binary.BigEndian, request)
-	request = &DelphinHeader{2, 0x01, 0, 0, 3, 0, 0}
-	binary.Write(conn, binary.BigEndian, request)
-
-	//Send "Ping" Packets
-	go func() {
-		t := time.NewTicker(time.Second)
-		i := int32(4)
-		for {
-			syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, i, 0, 0}
-			tn := time.Now()
-			binary.Write(conn, binary.BigEndian, syncreq)
-			conn.Write([]byte{0, 0, 0, 0})
-			binary.Write(conn, binary.BigEndian, tn.UnixNano())
-			i++
-			<-t.C
-		}
-	}()
-
-	d.ValueBufferRaw = make([]*ring.Ring, 31)       //Should be faster and smaller then a map
-	d.ValueBufferFiltered = make([]*ring.Ring, 31)  //Should be faster and smaller then a map
-	d.AdjustmentTable = make([]AdjustmentTable, 31) //Should be faster and smaller then a map
-	go valueCalc(d)                                 // Send calculated values to buffer
-	go valueBuffer(d)                               // Buffer Storage
-
-	//Receiver loop
+//Receiver loop
+func (d *DelphinReceiver) receiverLoop() {
 	for {
-		head, data, err := readPacket(conn)
+		head, data, err := readPacket(d.conn)
 		ptime := time.Now()
 		if err != nil {
 			fmt.Printf("%s\n", err)
@@ -310,12 +295,44 @@ func (d *DelphinReceiver) Start() {
 			}
 		}
 	}
-
 }
 
+//Start streaming data from Delphin device.
+//Never returns. Will handle d.connection errors by red.connecting.
+func (d *DelphinReceiver) Start() {
+	for {
+		d.connectDelphin()
+		d.receiverLoop()
+		time.Sleep(500 * time.Millisecond)
+	}
+}
+
+//Init set up everything needed for receiving data.
 func NewDelphinReceiver(addr string) *DelphinReceiver {
 	d := new(DelphinReceiver)
 	d.addr = addr
 	d.ReductionFactor = 10
+	d.calc_chan = make(chan DelphinChannelData, 100) //Value calculations
+	d.buffer_chan = make(chan ChannelData, 100)      //Value buffer
+	d.ValueBufferRaw = make([]*ring.Ring, 31)        //Should be faster and smaller then a map
+	d.ValueBufferFiltered = make([]*ring.Ring, 31)   //Should be faster and smaller then a map
+	d.AdjustmentTable = make([]AdjustmentTable, 31)  //Should be faster and smaller then a map
+	go valueCalc(d)                                  // Send calculated values to buffer
+	go valueBuffer(d)                                // Buffer Storage
+	//Send "Ping" Packets
+	go func() {
+		t := time.NewTicker(time.Second)
+		for {
+			if d.connected {
+				syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, d.sequencenr, 0, 0}
+				tn := time.Now()
+				binary.Write(d.conn, binary.BigEndian, syncreq)
+				d.conn.Write([]byte{0, 0, 0, 0})
+				binary.Write(d.conn, binary.BigEndian, tn.UnixNano())
+				d.sequencenr++
+			}
+			<-t.C
+		}
+	}()
 	return d
 }
