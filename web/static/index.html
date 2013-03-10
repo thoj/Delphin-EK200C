@@ -38,9 +38,7 @@ $(function() {
  29:		"Channel 29",
  30:		"Channel 30"
 	};
-	for (var i in def) { 
-		$('#overview').append('<div class="container"><div id="placeholder'+i+'" class="placeholder"></div>')
-	}
+        var plot = {};
 	var options = {
 		lines: {
 			show: true,
@@ -51,8 +49,15 @@ $(function() {
 		},
 		legend: {
 		    position: "nw"
-		}
+		},
+                shadowSize: 0
 	};
+	for (var i in def) { 
+		$('#overview').append('<div class="container"><div id="placeholder'+i+'" class="placeholder"></div>')
+	}
+	for (var i in def) { 
+		plot[i] = $.plot("#placeholder"+i, [], options);
+	}
 
 	var data = [];
 	fetchData()
@@ -67,9 +72,12 @@ $(function() {
 			url: "/json/slow?channel="+ch+"&values=3600",
 			type: "GET",
 			dataType: "json",
+                        cache: false,
 			success: function(series) {
 				var s = [{ label: def[ch]+'<br>'+series["values"][0][1]+"mV", color: "red",  data: series["values"] }];
-				$.plot("#placeholder"+ch, s, options);
+				plot[ch].setData(s);
+                                plot[ch].setupGrid();
+                                plot[ch].draw();
 			}
 		});
 	}
@@ -79,7 +87,7 @@ $(function() {
 	.container {
 		border: 1px solid #ddd;
 		width: 400px;
-		height: 100px;
+		height: 200px;
 		float: left;
 		padding: 10px 10px 10px 10px;
 	}
