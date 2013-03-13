@@ -8,15 +8,20 @@ package main
 
 import (
 	"compress/gzip"
+	"container/ring"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-        "container/ring"
+)
+
+const (
+	STD_DEV_RED = 100
 )
 
 type gzipResponseWriter struct {
@@ -49,22 +54,61 @@ func gzHandler(h http.HandlerFunc) http.HandlerFunc {
 	})
 }
 
+//N version of ring.Do in reverse
+func doNr(r *ring.Ring, n int, f func(interface{})) int {
+	e := r
+	i := 0
+	for ; i < n && e.Value != nil; i++ {
+		f(e.Value)
+		e = e.Prev()
+	}
+	return i
+}
+
 func httpserver(d *DelphinReceiver) {
 
 	_, zone_offset := time.Now().Zone() //Javascript is dumb
 
 	slow_buffer := make([]*ring.Ring, 31)
+	std_dev := make([]*ring.Ring, 31)
 	for i := 0; i < 31; i++ {
 		slow_buffer[i] = ring.New(1440)
+		std_dev[i] = ring.New(1440)
 	}
 
 	//Sample buffer evey 10 seconds
+	/*
+		go func() {
+			t := time.NewTicker(10000 * time.Millisecond)
+			for {
+				for i := 0; i < 31; i++ {
+					slow_buffer[i] = slow_buffer[i].Next()
+					slow_buffer[i].Value = d.ValueBuffer[i].Value
+				}
+				<-t.C
+			}
+		}()
+	*/
+	//Calculate x sec average 
+	//Calculate standard deviation every 10 seconds
 	go func() {
 		t := time.NewTicker(10000 * time.Millisecond)
 		for {
 			for i := 0; i < 31; i++ {
-				slow_buffer[i] = slow_buffer[i].Next()
-				slow_buffer[i].Value = d.ValueBuffer[i].Value
+				avg := float64(0)
+				num := doNr(d.ValueBuffer[i], STD_DEV_RED, func(e interface{}) { avg += e.(ChannelData).Value })
+				if num > 0 {
+					avg = avg / float64(num)
+					last := d.ValueBuffer[i].Value.(ChannelData).Timestamp
+					std := float64(0)
+					num2 := doNr(d.ValueBuffer[i], num, func(e interface{}) { std += math.Pow(e.(ChannelData).Value-avg, 2) })
+					std = math.Sqrt(std / float64(num2))
+					std_dev[i] = std_dev[i].Next()
+					std_dev[i].Value = ChannelData{last, std}
+					slow_buffer[i] = slow_buffer[i].Next()
+					slow_buffer[i].Value = ChannelData{last, avg}
+					fmt.Printf("%d %d %f %f\n", num, num2, avg, std)
+				}
 			}
 			<-t.C
 		}
@@ -90,7 +134,13 @@ func httpserver(d *DelphinReceiver) {
 				data = append(data, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), int64(e.Value.(ChannelData).Value + 0.5)})
 				e = e.Prev()
 			}
-			enc.Encode(map[string]interface{}{"values": data, "error": false})
+			stddev := make([]interface{}, 0, requested_values)
+			e = std_dev[ch]
+			for i := 0; i < requested_values && e.Value != nil; i++ {
+				stddev = append(stddev, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), float64(int64(e.Value.(ChannelData).Value*1000)) / 1000})
+				e = e.Prev()
+			}
+			enc.Encode(map[string]interface{}{"values": data, "stddev": stddev, "error": false})
 			data = nil
 		} else {
 			enc.Encode(map[string]interface{}{"error": true, "error_msg": "No channel defined", "error_num": 440})
