@@ -304,9 +304,9 @@
         
         function parseData(d) {
             var res = [];
-            for (var i = 0; i < d.length; ++i) {
+            for (var i = 0; i < d.length; i=i+1) {
+				
                 var s = $.extend(true, {}, options.series);
-
                 if (d[i].data != null) {
                     s.data = d[i].data; // move the data instead of deep-copy
                     delete d[i].data;

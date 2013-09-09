@@ -41,7 +41,7 @@ import (
 	"bytes"
 	"container/ring"
 	"encoding/binary"
-	"fmt"
+	"log"
 	"math"
 	"net"
 	"time"
@@ -96,7 +96,7 @@ type DelphinChannelData struct {
 	PacketTime   time.Time
 	Timestamp    uint32
 	Channel      uint8
-	RawValue     int32 //Raw 
+	RawValue     int32 //Raw
 	Value        float64
 	Abstimestamp time.Time
 	Last         bool
@@ -146,11 +146,11 @@ func valueCalc(d *DelphinReceiver) {
 		i.Value = adjustValue(float64(float64(i.RawValue)/RAW_MAX)*ENG_MAX, d.AdjustmentTable[i.Channel])
 
 		//Convert timestamp to Absolute timestamp
-		//Note: This timestamp can be sligltly in the future. (100ms) 
-		//The timstamp relative to other mesurements is more important	
-		//There is about 70ms drift over an hour on my unit. 
+		//Note: This timestamp can be sligltly in the future. (100ms)
+		//The timstamp relative to other mesurements is more important
+		//There is about 70ms drift over an hour on my unit.
 		//Sync every 100k mesurments, this causes some jitter due to network latency (+-1ms)
-		//Somekind of incremental adjustment would be better 
+		//Somekind of incremental adjustment would be better
 
 		if sync {
 			sync = false
@@ -228,14 +228,14 @@ func (d *DelphinReceiver) postConnect() {
 }
 
 func (d *DelphinReceiver) connectDelphin() {
-	fmt.Printf("Connecting to %s...\n", d.addr)
+	log.Printf("Connecting to %s...\n", d.addr)
 	var err error
 	d.conn, err = net.Dial("tcp", d.addr)
 	if err != nil {
-		fmt.Printf("%s", err)
+		log.Printf("%s", err)
 		return
 	}
-	fmt.Printf("Connected...\n")
+	log.Printf("Connected...\n")
 	d.postConnect()
 }
 
@@ -245,7 +245,7 @@ func (d *DelphinReceiver) receiverLoop() {
 		head, data, err := readPacket(d.conn)
 		ptime := time.Now()
 		if err != nil {
-			fmt.Printf("%s\n", err)
+			log.Printf("%s\n", err)
 			return
 		}
 		switch {
@@ -272,17 +272,17 @@ func (d *DelphinReceiver) receiverLoop() {
 		case head.Com == -32696: //Calib Data
 			calib, err := NewCalibration(data[4:])
 			if err != nil {
-				fmt.Printf("%s\n", err)
+				log.Printf("%s\n", err)
 			}
 			calib.AdjustmentTable(10, d.AdjustmentTable) //Convert to adjustment table
-			fmt.Printf("New adjustment table:\n%3s %16s %16s %16s %16s\n", "Chan", "Order0", "Order1", "Order2", "Order3")
-			for v, _ := range d.AdjustmentTable {
-				fmt.Printf("%3d ", v)
-				for _, w := range d.AdjustmentTable[v].Order {
-					fmt.Printf("%16e ", w)
-				}
-				fmt.Printf("\n")
-			}
+			log.Printf("New adjustment table:\n%3s %16s %16s %16s %16s\n", "Chan", "Order0", "Order1", "Order2", "Order3")
+			//for v, _ := range d.AdjustmentTable {
+			//fmt.Printf("%3d ", v)
+			//for _, w := range d.AdjustmentTable[v].Order {
+			//	fmt.Printf("%16e ", w)
+			//}
+			//fmt.Printf("\n")
+			//}
 		}
 	}
 }
@@ -293,7 +293,9 @@ func (d *DelphinReceiver) Start() {
 	for {
 		d.connectDelphin()
 		d.receiverLoop()
-		time.Sleep(500 * time.Millisecond)
+		d.conn.Close()
+		log.Printf("Socket Read Error... Reconnecting\n")
+		time.Sleep(1000 * time.Millisecond)
 	}
 }
 
