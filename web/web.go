@@ -20,7 +20,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"encoding/gob"
+	"encoding/xml"
 )
 
 const (
@@ -33,8 +33,13 @@ func SaveSlowBuffer(buf []*ring.Ring) {
 		fh, err := os.OpenFile(fmt.Sprintf("slow_buf%d.bin",i), os.O_WRONLY|os.O_CREATE, 0600)
 		if err != nil {
 			panic(err)
-		}
-		gob.NewEncoder(fh).Encode(buf[i])
+	 	}
+		e := buf[i]
+		en :=  xml.NewEncoder(fh);
+	 	for i := 0; i < SLOW_BUFFER_SIZE && e.Value != nil; i++ {
+			en.Encode(e.Value)
+			e = e.Prev()
+	 	}
 		fh.Close()
 	}
 }
@@ -82,10 +87,6 @@ func doNr(r *ring.Ring, n int, f func(interface{})) int {
 
 func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ring) {
 
-	for i := 0; i < 31; i++ {
-		slow_buffer[i] = ring.New(SLOW_BUFFER_SIZE)
-		std_dev[i] = ring.New(SLOW_BUFFER_SIZE)
-	}
 
 	//Calculate x sec average
 	//Calculate standard deviation every 10 seconds
@@ -203,6 +204,10 @@ func main() {
 	}()
 	slow_buffer := make([]*ring.Ring, 31)
 	std_dev := make([]*ring.Ring, 31)
+	for i := 0; i < 31; i++ {
+		slow_buffer[i] = ring.New(SLOW_BUFFER_SIZE)
+		std_dev[i] = ring.New(SLOW_BUFFER_SIZE)
+	}
 
 	go httpserver(d, slow_buffer, std_dev)
 	go d.Start()
