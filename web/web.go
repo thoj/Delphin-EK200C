@@ -214,6 +214,9 @@ loop:
 			printfAt(0, 31, "%#v", ev)
 			switch ev.Key {
 			case termbox.KeyEsc:
+				SaveRingBuffer(slow_buffer, "slow_buffer")
+				SaveRingBuffer(std_dev, "std_dev")
+				log.Printf("Saved buffers in %v on exit", time.Now().Sub(now))
 				break loop
 			}
 		}
