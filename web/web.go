@@ -20,29 +20,12 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"encoding/xml"
 )
 
 const (
 	STD_DEV_RED      = 100
 	SLOW_BUFFER_SIZE = 20000
 )
-
-func SaveSlowBuffer(buf []*ring.Ring) {
-	for i := 0; i < 31; i++ {
-		fh, err := os.OpenFile(fmt.Sprintf("slow_buf%d.bin",i), os.O_WRONLY|os.O_CREATE, 0600)
-		if err != nil {
-			panic(err)
-	 	}
-		e := buf[i]
-		en :=  xml.NewEncoder(fh);
-	 	for i := 0; i < SLOW_BUFFER_SIZE && e.Value != nil; i++ {
-			en.Encode(e.Value)
-			e = e.Prev()
-	 	}
-		fh.Close()
-	}
-}
 
 type gzipResponseWriter struct {
 	io.Writer
@@ -86,7 +69,6 @@ func doNr(r *ring.Ring, n int, f func(interface{})) int {
 }
 
 func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ring) {
-
 
 	//Calculate x sec average
 	//Calculate standard deviation every 10 seconds
@@ -148,7 +130,7 @@ func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ri
 		r.ParseForm()
 	})
 
-	err := http.ListenAndServe(":12346", nil)
+	err := http.ListenAndServe(":12345", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
@@ -170,19 +152,41 @@ func printfAt(x int, y int, format string, a ...interface{}) {
 }
 
 func main() {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
-	file, err := os.OpenFile("web.log", os.O_RDWR|os.O_CREATE, 0666)
+	file, err := os.OpenFile("web.log", os.O_RDWR|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 	log.SetOutput(file)
-	d := NewDelphinReceiver("192.168.251.253:1034")
+	d := NewDelphinReceiver("192.168.251.252:1034")
 	d.ReductionFactor = 10
+
+	slow_buffer := make([]*ring.Ring, 31)
+	std_dev := make([]*ring.Ring, 31)
+	for i := 0; i < 31; i++ {
+		slow_buffer[i] = ring.New(SLOW_BUFFER_SIZE)
+		std_dev[i] = ring.New(SLOW_BUFFER_SIZE)
+	}
+	LoadRingBuffer(slow_buffer, "slow_buffer")
+	LoadRingBuffer(std_dev, "std_dev")
+	go httpserver(d, slow_buffer, std_dev)
+	go d.Start()
+
+	go func() {
+		c := time.Tick(1 * time.Minute)
+		for now := range c {
+			SaveRingBuffer(slow_buffer, "slow_buffer")
+			SaveRingBuffer(std_dev, "std_dev")
+			log.Printf("Saved buffers in %v", time.Now().Sub(now))
+		}
+	}()
+	go DatabaseCollector(slow_buffer, 1)
+	time.Sleep(5 * time.Second)
+	err = termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer termbox.Close()
 
 	go func() {
 		t := time.NewTicker(1000 * time.Millisecond)
@@ -202,28 +206,15 @@ func main() {
 			<-t.C
 		}
 	}()
-	slow_buffer := make([]*ring.Ring, 31)
-	std_dev := make([]*ring.Ring, 31)
-	for i := 0; i < 31; i++ {
-		slow_buffer[i] = ring.New(SLOW_BUFFER_SIZE)
-		std_dev[i] = ring.New(SLOW_BUFFER_SIZE)
-	}
-
-	go httpserver(d, slow_buffer, std_dev)
-	go d.Start()
 
 loop:
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
-			printfAt(0,31,"%#v", ev)
+			printfAt(0, 31, "%#v", ev)
 			switch ev.Key {
 			case termbox.KeyEsc:
 				break loop
-			}
-			if ev.Ch == 's' {
-				printfAt(0, 30, "Saving data...")
-				SaveSlowBuffer(slow_buffer)
 			}
 		}
 	}
