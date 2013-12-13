@@ -196,6 +196,9 @@ func adjustValue(v float64, adj AdjustmentTable) float64 {
 
 func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
 	var header DelphinHeader
+	if conn == nil {
+		return header, nil, nil
+	}
 	err := binary.Read(conn, binary.BigEndian, &header)
 	if err != nil {
 		return header, nil, err
@@ -227,21 +230,25 @@ func (d *DelphinReceiver) postConnect() {
 	d.sequencenr = int32(4)
 }
 
-func (d *DelphinReceiver) connectDelphin() {
+func (d *DelphinReceiver) connectDelphin() error {
 	log.Printf("Connecting to %s...\n", d.addr)
 	var err error
 	d.conn, err = net.Dial("tcp", d.addr)
 	if err != nil {
 		log.Printf("%s", err)
-		return
+		return err
 	}
 	log.Printf("Connected...\n")
 	d.postConnect()
+	return nil
 }
 
 //Receiver loop
 func (d *DelphinReceiver) receiverLoop() {
 	for {
+		if d.conn == nil {
+			return
+		}
 		head, data, err := readPacket(d.conn)
 		ptime := time.Now()
 		if err != nil {
@@ -291,11 +298,13 @@ func (d *DelphinReceiver) receiverLoop() {
 //Never returns. Will handle d.connection errors by red.connecting.
 func (d *DelphinReceiver) Start() {
 	for {
-		d.connectDelphin()
-		d.receiverLoop()
-		d.conn.Close()
+		err := d.connectDelphin()
+		if err != nil {
+			d.receiverLoop()
+			d.conn.Close()
+		}
 		log.Printf("Socket Read Error... Reconnecting\n")
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(10000 * time.Millisecond)
 	}
 }
 

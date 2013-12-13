@@ -68,28 +68,30 @@ func doNr(r *ring.Ring, n int, f func(interface{})) int {
 	return i
 }
 
-func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ring) {
+func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]*ring.Ring) {
 
 	//Calculate x sec average
 	//Calculate standard deviation every 10 seconds
 	go func() {
 		t := time.NewTicker(10000 * time.Millisecond)
 		for {
-			for i := 0; i < 31; i++ {
-				avg := float64(0)
-				num := doNr(d.ValueBuffer[i], STD_DEV_RED, func(e interface{}) { avg += e.(ChannelData).Value })
-				if num > 0 {
-					avg = avg / float64(num)
-					last := d.ValueBuffer[i].Value.(ChannelData).Timestamp
-					std := float64(0)
-					num2 := doNr(d.ValueBuffer[i], num, func(e interface{}) { std += math.Pow(e.(ChannelData).Value-avg, 2) })
-					std = math.Sqrt(std / float64(num2))
-					std_dev[i] = std_dev[i].Next()
-					std_dev[i].Value = ChannelData{last, std}
-					slow_buffer[i] = slow_buffer[i].Next()
-					slow_buffer[i].Value = ChannelData{last, avg}
-				}
+			for di, d := range del {
+				for i := 0; i < 31; i++ {
+					avg := float64(0)
+					num := doNr(d.ValueBuffer[i], STD_DEV_RED, func(e interface{}) { avg += e.(ChannelData).Value })
+					if num > 0 {
+						avg = avg / float64(num)
+						last := d.ValueBuffer[i].Value.(ChannelData).Timestamp
+						std := float64(0)
+						num2 := doNr(d.ValueBuffer[i], num, func(e interface{}) { std += math.Pow(e.(ChannelData).Value-avg, 2) })
+						std = math.Sqrt(std / float64(num2))
+						std_dev[di][i] = std_dev[di][i].Next()
+						std_dev[di][i].Value = ChannelData{last, std}
+						slow_buffer[di][i] = slow_buffer[di][i].Next()
+						slow_buffer[di][i].Value = ChannelData{last, avg}
+					}
 
+				}
 			}
 			<-t.C
 		}
@@ -101,7 +103,11 @@ func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ri
 		r.ParseForm()
 		enc := json.NewEncoder(w)
 		requested_values := 100
+		unit := 0 // Default delphin unit is 0
 		if ch, err := strconv.Atoi(r.FormValue("channel")); err == nil {
+			if unit, err = strconv.Atoi(r.FormValue("unit")); err != nil {
+				unit = 0
+			}
 			if requested_values, err = strconv.Atoi(r.FormValue("values")); err != nil {
 				requested_values = 100
 			}
@@ -109,13 +115,13 @@ func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ri
 				requested_values = SLOW_BUFFER_SIZE
 			}
 			data := make([]interface{}, 0, requested_values)
-			e := slow_buffer[ch]
+			e := slow_buffer[unit][ch]
 			for i := 0; i < requested_values && e.Value != nil; i++ {
 				data = append(data, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), int64(e.Value.(ChannelData).Value + 0.5)})
 				e = e.Prev()
 			}
 			stddev := make([]interface{}, 0, requested_values)
-			e = std_dev[ch]
+			e = std_dev[unit][ch]
 			for i := 0; i < requested_values && e.Value != nil; i++ {
 				stddev = append(stddev, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), float64(int64(e.Value.(ChannelData).Value*1000)) / 1000})
 				e = e.Prev()
@@ -126,9 +132,6 @@ func httpserver(d *DelphinReceiver, slow_buffer []*ring.Ring, std_dev []*ring.Ri
 			enc.Encode(map[string]interface{}{"error": true, "error_msg": "No channel defined", "error_num": 440})
 		}
 	}))
-	http.HandleFunc("/json/fast", func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
-	})
 
 	err := http.ListenAndServe(":12345", nil)
 	if err != nil {
@@ -158,31 +161,41 @@ func main() {
 	}
 	defer file.Close()
 	log.SetOutput(file)
-	d := NewDelphinReceiver("192.168.251.252:1034")
-	d.ReductionFactor = 10
 
-	slow_buffer := make([]*ring.Ring, 31)
-	std_dev := make([]*ring.Ring, 31)
-	for i := 0; i < 31; i++ {
-		slow_buffer[i] = ring.New(SLOW_BUFFER_SIZE)
-		std_dev[i] = ring.New(SLOW_BUFFER_SIZE)
-	}
-	LoadRingBuffer(slow_buffer, "slow_buffer")
-	LoadRingBuffer(std_dev, "std_dev")
-	go httpserver(d, slow_buffer, std_dev)
-	go d.Start()
+	units := 2
+	unit_address := [2]string{"192.168.251.252:1034", "192.168.251.253:1034"}
 
-	go func() {
-		c := time.Tick(1 * time.Minute)
-		for now := range c {
-			SaveRingBuffer(slow_buffer, "slow_buffer")
-			SaveRingBuffer(std_dev, "std_dev")
-			log.Printf("Saved buffers in %v", time.Now().Sub(now))
+	slow_buffer := make([][]*ring.Ring, units)
+	std_dev := make([][]*ring.Ring, units)
+	del := make([]*DelphinReceiver, units)
+
+	for d := 0; d < units; d++ { // Initilize buffers and start collectors
+		del[d] = NewDelphinReceiver(unit_address[d])
+		del[d].ReductionFactor = 10
+
+		slow_buffer[d] = make([]*ring.Ring, 31)
+		std_dev[d] = make([]*ring.Ring, 31)
+		for i := 0; i < 31; i++ {
+			slow_buffer[d][i] = ring.New(SLOW_BUFFER_SIZE)
+			std_dev[d][i] = ring.New(SLOW_BUFFER_SIZE)
 		}
-	}()
-	go DatabaseCollector(slow_buffer, 1)
+		LoadRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
+		LoadRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
+
+		go func() {
+			c := time.Tick(1 * time.Minute)
+			for now := range c {
+				SaveRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer", d))
+				SaveRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
+				log.Printf("Saved buffers in %v", time.Now().Sub(now))
+			}
+		}()
+		go DatabaseCollector(slow_buffer[d], 1)
+		go del[d].Start()
+	}
+	go httpserver(del, slow_buffer, std_dev)
 	time.Sleep(5 * time.Second)
-	err = termbox.Init()
+/*	err = termbox.Init()
 	if err != nil {
 		panic(err)
 	}
@@ -191,35 +204,41 @@ func main() {
 	go func() {
 		t := time.NewTicker(1000 * time.Millisecond)
 		for {
-			if d.ValueBufferRaw != nil {
-				for i := 0; i < 31; i++ {
-					if d.ValueBuffer[i] != nil && d.ValueBuffer[i].Value != nil {
-						printfAt(i%2*20, i/2, "%2d: %12.5f", i, d.ValueBuffer[i].Value.(ChannelData).Value)
-					} else {
-						printfAt(i%2*20, i/2, "%2d: No data ...", i)
+			for d := 0; d < units; d++ {
+				if del[d].ValueBufferRaw != nil {
+					for i := 0; i < 31; i++ {
+						if del[d].ValueBuffer[i] != nil && del[d].ValueBuffer[i].Value != nil {
+							printfAt(i%2*20+(40*(d+1)), i/2, "%2d: %12.5f", i, del[d].ValueBuffer[i].Value.(ChannelData).Value)
+						} else {
+							printfAt(i%2*20+(40*(d+1)), i/2, "%2d: No data ...", i)
 
+						}
 					}
+				} else {
+					printfAt(0, 31+d, "No data for unit %d", d)
 				}
-			} else {
-				printfAt(0, 0, "No data ...")
 			}
 			<-t.C
 		}
 	}()
-
-loop:
+*/
+//loop:
 	for {
-		switch ev := termbox.PollEvent(); ev.Type {
+/*		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			printfAt(0, 31, "%#v", ev)
 			switch ev.Key {
 			case termbox.KeyEsc:
 				now := time.Now()
-				SaveRingBuffer(slow_buffer, "slow_buffer")
-				SaveRingBuffer(std_dev, "std_dev")
+				for d := 0; d < units; d++ {
+					SaveRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
+					SaveRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
+				}
 				log.Printf("Saved buffers in %v on exit", time.Now().Sub(now))
 				break loop
 			}
 		}
+*/
+		time.Sleep(100)
 	}
 }
