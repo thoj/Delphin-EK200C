@@ -53,7 +53,7 @@ const (
 	ENG_MIN = -10000
 
 	BUFFER_SIZE     = 3000 // Buffer for filtered values 300 sec @ Reduction factor = 10
-	RAW_BUFFER_SIZE = 500  //Keep raw values around for 5 seconds @ 100Hz
+	RAW_BUFFER_SIZE = 2500 //Keep raw values around for 25 seconds @ 100Hz
 )
 
 type DelphinReceiver struct {
@@ -61,10 +61,12 @@ type DelphinReceiver struct {
 	ValueBuffer     []*ring.Ring      //Holds filtered buffer
 	AdjustmentTable []AdjustmentTable //Holds channel adjustment data
 
-	ReductionFactor int                     //For filter
-	addr            string                  //IP+Port
-	calc_chan       chan DelphinChannelData //Value calculations
-	buffer_chan     chan DelphinChannelData //Value buffer
+	FIRTaps    int           //For filter
+	SampleTime time.Duration //Sample the filtered buffer this often
+
+	addr        string                  //IP+Port
+	calc_chan   chan DelphinChannelData //Value calculations
+	buffer_chan chan DelphinChannelData //Value buffer
 
 	at0 time.Time
 	ts0 uint32
@@ -108,10 +110,10 @@ type ChannelData struct {
 	Value     float64
 }
 
-// Keep updated rolling value buffer
+// Process values coming from ADC
 func valueBuffer(d *DelphinReceiver) {
-	counter := make([]int, 31)
-	values := make([]float64, 31)
+	last_sample := make([]time.Time, 31)
+
 	for i := 0; i < 31; i++ {
 		d.ValueBufferRaw[i] = ring.New(RAW_BUFFER_SIZE)
 		d.ValueBuffer[i] = ring.New(BUFFER_SIZE)
@@ -122,14 +124,20 @@ func valueBuffer(d *DelphinReceiver) {
 		//Move head forwards
 		d.ValueBufferRaw[v.Channel] = d.ValueBufferRaw[v.Channel].Next()
 		d.ValueBufferRaw[v.Channel].Value = ChannelData{v.Abstimestamp, v.Value} //Set value
-		values[v.Channel] += v.Value
-		counter[v.Channel]++
-		if counter[v.Channel] >= d.ReductionFactor {
-			//Move header forward
+
+		// FIR Calculation
+		p0 := d.ValueBufferRaw[v.Channel]
+		i := 0
+		out := float64(0)
+		for ; i < d.FIRTaps && p0.Value != nil; i++ {
+			out += p0.Value.(ChannelData).Value
+			p0 = p0.Prev()
+		}
+		out = out / float64(i)
+		if v.Abstimestamp.Sub(last_sample[v.Channel]) >= d.SampleTime {
 			d.ValueBuffer[v.Channel] = d.ValueBuffer[v.Channel].Next()
-			d.ValueBuffer[v.Channel].Value = ChannelData{v.Abstimestamp, values[v.Channel] / float64(d.ReductionFactor)}
-			counter[v.Channel] = 0
-			values[v.Channel] = 0
+			d.ValueBuffer[v.Channel].Value = ChannelData{v.Abstimestamp, out}
+			last_sample[v.Channel] = v.Abstimestamp
 		}
 	}
 }
@@ -196,9 +204,6 @@ func adjustValue(v float64, adj AdjustmentTable) float64 {
 
 func readPacket(conn net.Conn) (DelphinHeader, []byte, error) {
 	var header DelphinHeader
-	if conn == nil {
-		return header, nil, nil
-	}
 	err := binary.Read(conn, binary.BigEndian, &header)
 	if err != nil {
 		return header, nil, err
@@ -235,7 +240,7 @@ func (d *DelphinReceiver) connectDelphin() error {
 	var err error
 	d.conn, err = net.Dial("tcp", d.addr)
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("Connection Error: %s", err)
 		return err
 	}
 	log.Printf("Connected...\n")
@@ -299,7 +304,7 @@ func (d *DelphinReceiver) receiverLoop() {
 func (d *DelphinReceiver) Start() {
 	for {
 		err := d.connectDelphin()
-		if err != nil {
+		if err == nil {
 			d.receiverLoop()
 			d.conn.Close()
 		}
@@ -312,7 +317,8 @@ func (d *DelphinReceiver) Start() {
 func NewDelphinReceiver(addr string) *DelphinReceiver {
 	d := new(DelphinReceiver)
 	d.addr = addr
-	d.ReductionFactor = 10
+	d.FIRTaps = 800
+	d.SampleTime = 250 * time.Millisecond
 	d.calc_chan = make(chan DelphinChannelData, 100)   //Value calculations
 	d.buffer_chan = make(chan DelphinChannelData, 100) //Value buffer
 	d.ValueBufferRaw = make([]*ring.Ring, 31)          //Should be faster and smaller then a map

@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	STD_DEV_RED      = 100
+	STD_DEV_RED      = 32
 	SLOW_BUFFER_SIZE = 20000
 )
 
@@ -132,6 +132,25 @@ func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]
 			enc.Encode(map[string]interface{}{"error": true, "error_msg": "No channel defined", "error_num": 440})
 		}
 	}))
+	http.HandleFunc("/json/fast", gzHandler(func(w http.ResponseWriter, r *http.Request) {
+		_, zone_offset := time.Now().Zone() //Javascript is dumb
+		r.ParseForm()
+		unit := 0
+		enc := json.NewEncoder(w)
+		if ch, err := strconv.Atoi(r.FormValue("channel")); err == nil {
+			if unit, err = strconv.Atoi(r.FormValue("unit")); err != nil {
+				unit = 0
+			}
+			e := del[unit].ValueBuffer[ch]
+			data := make([]interface{}, 0, 100)
+			for i := 0; i < 100 && e.Value != nil; i++ {
+				data = append(data, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), e.Value.(ChannelData).Value})
+				e = e.Prev()
+			}
+			enc.Encode(data)
+			data = nil
+		}
+	}))
 
 	err := http.ListenAndServe(":12345", nil)
 	if err != nil {
@@ -171,7 +190,6 @@ func main() {
 
 	for d := 0; d < units; d++ { // Initilize buffers and start collectors
 		del[d] = NewDelphinReceiver(unit_address[d])
-		del[d].ReductionFactor = 10
 
 		slow_buffer[d] = make([]*ring.Ring, 31)
 		std_dev[d] = make([]*ring.Ring, 31)
@@ -182,63 +200,65 @@ func main() {
 		LoadRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
 		LoadRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
 
-		go func() {
-			c := time.Tick(1 * time.Minute)
-			for now := range c {
-				SaveRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer", d))
-				SaveRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
-				log.Printf("Saved buffers in %v", time.Now().Sub(now))
-			}
-		}()
 		go DatabaseCollector(slow_buffer[d], 1)
 		go del[d].Start()
 	}
-	go httpserver(del, slow_buffer, std_dev)
-	time.Sleep(5 * time.Second)
-/*	err = termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
-
 	go func() {
-		t := time.NewTicker(1000 * time.Millisecond)
-		for {
-			for d := 0; d < units; d++ {
-				if del[d].ValueBufferRaw != nil {
-					for i := 0; i < 31; i++ {
-						if del[d].ValueBuffer[i] != nil && del[d].ValueBuffer[i].Value != nil {
-							printfAt(i%2*20+(40*(d+1)), i/2, "%2d: %12.5f", i, del[d].ValueBuffer[i].Value.(ChannelData).Value)
-						} else {
-							printfAt(i%2*20+(40*(d+1)), i/2, "%2d: No data ...", i)
-
-						}
-					}
-				} else {
-					printfAt(0, 31+d, "No data for unit %d", d)
-				}
+		c := time.Tick(1 * time.Minute)
+		for now := range c {
+			for ds := 0; ds < units; ds++ { // Initilize buffers and start collectors
+				SaveRingBuffer(slow_buffer[ds], fmt.Sprintf("slow_buffer%d", ds))
+				SaveRingBuffer(std_dev[ds], fmt.Sprintf("std_dev%d", ds))
+				log.Printf("Saved buffers in %v", time.Now().Sub(now))
 			}
-			<-t.C
 		}
 	}()
-*/
-//loop:
-	for {
-/*		switch ev := termbox.PollEvent(); ev.Type {
-		case termbox.EventKey:
-			printfAt(0, 31, "%#v", ev)
-			switch ev.Key {
-			case termbox.KeyEsc:
-				now := time.Now()
-				for d := 0; d < units; d++ {
-					SaveRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
-					SaveRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
-				}
-				log.Printf("Saved buffers in %v on exit", time.Now().Sub(now))
-				break loop
-			}
+	go httpserver(del, slow_buffer, std_dev)
+	time.Sleep(5 * time.Second)
+	/*	err = termbox.Init()
+		if err != nil {
+			panic(err)
 		}
-*/
-		time.Sleep(100)
+		defer termbox.Close()
+
+		go func() {
+			t := time.NewTicker(1000 * time.Millisecond)
+			for {
+				for d := 0; d < units; d++ {
+					if del[d].ValueBufferRaw != nil {
+						for i := 0; i < 31; i++ {
+							if del[d].ValueBuffer[i] != nil && del[d].ValueBuffer[i].Value != nil {
+								printfAt(i%2*20+(40*(d+1)), i/2, "%2d: %12.5f", i, del[d].ValueBuffer[i].Value.(ChannelData).Value)
+							} else {
+								printfAt(i%2*20+(40*(d+1)), i/2, "%2d: No data ...", i)
+
+							}
+						}
+					} else {
+						printfAt(0, 31+d, "No data for unit %d", d)
+					}
+				}
+				<-t.C
+			}
+		}()
+	*/
+	//loop:
+	for {
+		/*		switch ev := termbox.PollEvent(); ev.Type {
+				case termbox.EventKey:
+					printfAt(0, 31, "%#v", ev)
+					switch ev.Key {
+					case termbox.KeyEsc:
+						now := time.Now()
+						for d := 0; d < units; d++ {
+							SaveRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
+							SaveRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
+						}
+						log.Printf("Saved buffers in %v on exit", time.Now().Sub(now))
+						break loop
+					}
+				}
+		*/
+		time.Sleep(1 * time.Second)
 	}
 }
