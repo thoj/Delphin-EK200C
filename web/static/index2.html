@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
+	<title>Overview F-LOGG-ALL</title>
+	<script src="/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<script src="/jquery.flot.js" type="text/javascript"></script>
+	<script type="text/javascript">
+        $(function() {
+        function showTooltip(x, y, contents) {
+            $('<div id="tooltip">' + contents + '</div>').css({
+                top: y + 10,
+                left: x + 5
+            }).appendTo("body").fadeIn(200);
+        }
+      
+		var def = {
+			"0-27": "Ovn 1",
+			"1-0": "Ovn 6",
+			"0-28": "Ovn 9",
+			"1-4": "Ovn 11",
+			"1-22": "Ovn 14",
+			"1-29": "Ovn 15",
+			"0-0": "Ovn 19",
+            "0-1": "Ovn 20",
+			"0-2": "Ovn 21",
+            "0-3": "Ovn 22",
+			 "0-4": "Ovn 1 Analog",
+			 "1-2": "Ovn 7 Phoenix GV",
+             "0-5": "Ovn 7 Gammel GV",
+             "0-6": "Ovn 7 Krone GV",
+            "0-7": "Ovn 26",
+            "0-9": "Ovn 27",
+            "0-10": "Ovn 28",
+            "0-11": "Ovn 29",
+            "0-12": "Ovn 30",
+            "0-13": "Ovn 31", 
+            "0-14": "Ovn 32",
+            "0-16": "Ovn 33",
+            "0-17": "Ovn 34",
+            "0-18": "Ovn 35",
+            "0-19": "Ovn 36",
+            "0-20": "Ovn 41",
+            "0-21": null,
+            "0-22": "Ovn 43",
+            "0-23": null,
+            "0-25": null,
+            "0-26": null,
+            "0-29": "Ovn 49",
+            "0-30": "Ovn 50",
+            "1-1": "Ovn 52",
+            "1-3": "Ovn 54",
+            "1-5": "Ovn 56",
+            "1-6": "Ovn 57",
+            "1-7": "Ovn 58",
+            "1-9": "Ovn 61",
+            "1-10": "Ovn 62",
+            "1-11": "Ovn 63",
+            "1-12": "Ovn 64",
+            "1-13": "Ovn 65", 
+            "1-14": "Ovn 66",
+            "1-16": "Ovn 67",
+            "1-17": "Ovn 68",
+            "1-18": "Ovn 69",
+            "1-19": "Ovn 70",
+            "1-20": "Ovn 71",
+            "1-21": "Ovn 72",
+            "1-23": "Ovn 74",
+            "1-25": null,
+            "1-26": null,
+            "1-27": null,
+            "1-28": null,
+            "1-30": "Ovn 80",	   
+        };
+
+        var alarm1 = {};
+        var alarm2 = {};
+        var plot = {};
+	var defaktiv = {};
+		
+        var options = {
+            grid: {
+			backgroundColor: { colors: ["lightgray","white","white","white","white","white"] },
+			clickable: true,
+			hoverable: true,
+			autoHighlight: true
+			},
+			font: {
+				 size: 16,
+				 weight: "bold",
+				 color: "black",
+				},
+			lines: {
+                show: true,
+                steps: true,
+				lineWidth: 2,
+				
+            },
+            xaxis: {
+                mode: "time"
+            },
+            yaxes: [{}, {
+                font:{
+				 size: 14,
+				 weight: "bold",
+				 color: "black",
+				},
+				show: false,
+// Y akse venstre
+				min: 0,
+                max: 30,
+                alignTicksWithAxis: 1,
+                position: "right",
+				
+            }],
+            /* Posisjon av forklaring - verdier */
+            legend: {
+				show : true,
+				container: null,
+                position: "nw",
+				weight: "bold",
+                color: "black",
+				size: 20,
+            },
+            shadowSize: 0
+        };
+		
+        for (var i in def) {
+            if (def[i] !== null  ) {	
+		//	if (i == 0) {
+		// Setter link til visengraf.html filen som viser en graf i full størrelse
+	           $('#overview').append('<a href="visengraf.html?def='+i+'"><div class="container"><div id="placeholder' + i + '" class="placeholder"><\/div></a>');
+        //    }
+			}
+		}
+		
+        var data = [];
+        fetchData();
+        for (i in def) {
+            if (def[i] !== null) {
+               plot[i] = $.plot("#placeholder" + i, [], options);
+               $("#placeholder"+i).bind("plothover", function (event, pos, item) {
+                if (item) {
+                    if (previousPoint != item.datapoint) {
+                        previousPoint = item.datapoint;
+
+                        $("#tooltip").remove();
+                        var x = item.datapoint[0],
+                            y = item.datapoint[1],
+                            d = new Date(x);
+
+                        showTooltip(item.pageX, item.pageY, y+" mV- "+$.plot.formatDate(d, "%H:%M:%S %d/%m" , null));
+                    }
+                }
+                else {
+                     $("#tooltip").remove();
+                     previousPoint = null;
+                }
+                });
+            }
+        }
+
+        function fetchData() {
+            for (var i in def) {
+                if (def[i] !== null) {
+                    fetchChannel(i);
+                }
+            }
+            setTimeout(fetchData, 10000);
+        }
+		// endre hvor mange timer som skal vises 400 er ca. en time
+
+        function fetchChannel(ch) {
+	    var unit = 0;
+	    var strch = new String(ch);
+	    var chint = 0;
+	    if ( strch.length > 2 ) {
+	            unit = strch.substring(0,1);
+		    chint = strch.substring(2);
+	    } else {
+		    chint = ch;
+	    }
+	    $.ajax({
+                url: "/json/slow?channel=" + chint + "&unit="+ unit +"&values=1200",
+                type: "GET",
+                dataType: "json",
+                cache: false,
+				
+                success: function(series) {
+                    //en hack for dette
+                    var noptions = plot[ch].getOptions();
+	//	Gammel y-akse					
+    //               var nmin = Math.floor((series.values[0][1] - 500) / 1000) * 1000;
+    //               noptions.yaxes[0].min = nmin;
+    //               noptions.yaxes[0].max = nmin + 1600; 
+	
+	// Y - aksen på graf for visning av volt				
+					var nmin = series.values[0][1];
+                    noptions.yaxes[0].min = nmin -300
+                    noptions.yaxes[0].max = nmin + 300;
+					
+                    var s;
+					// Hoy Alarm
+                    if (series.stddev[0][1] > 20) {
+                        alarm1[ch] = 300; 
+						defaktiv[ch] = 1;
+					} 
+					// Lav Alarm
+					else if (series.stddev[0][1] > 10) {
+                        alarm2[ch] = 150; 
+						defaktiv[ch] = 2;
+                    }
+					// Ingen alarm
+					else {
+						defaktiv[ch]= 0;
+					}
+                    // Fargekode på graf etter STD
+				if (alarm1[ch] > 0) {
+                        //Høy Alarm
+                        s = [{
+                            label: null,
+                            color: "red",
+							data: series.stddev,
+                            yaxis: 2
+                        }, {
+                            label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")",
+                            color: "blue",
+                            data: series.values
+                        }, ];
+                        alarm1[ch]--;
+                    }                 
+                    else if (alarm2[ch] > 0) {
+                        //Lav Alarm
+                        s = [{
+							label: null,
+                            color: "orange",
+                            data: series.stddev,
+                            yaxis: 2
+                        }, {
+                            label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")",
+                            color: "blue",
+                            data: series.values
+                        }, ];
+                        alarm2[ch]--;
+                    } 
+				else {
+                        //Normal
+                        s = [{
+                            label: null,
+                            color: "lightgrey",
+							data: series.stddev,
+                            yaxis: 2
+                        }, {
+                            label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")",
+                            color: "blue",
+                            data: series.values
+                        }, ];
+				}
+			
+                    //gjemme bort de som ikke er i alarm		IKKE GJEM I DENNE VERSJONEN!!!! - VISER ALLE
+                    if (alarm1[ch] > 0) {
+                        $("#placeholder"+ch).parent().show();
+                    } else {
+                        $("#placeholder"+ch).parent().show();
+                    }
+               
+					plot[ch].setData(s);
+                    plot[ch].setupGrid();
+                    plot[ch].draw();
+				
+					var today=new Date();
+					today.setTime(today.getTime() - today.getTimezoneOffset()*60*1000);
+                    $("#Tittel").text($.plot.formatDate(today, "%H:%M - %d/%m")+".");
+                }
+            });
+        }
+    });
+    </script>
+    <style type="text/css">
+	.container 
+	{
+		border: 1px solid #ddd;
+		width: 800px;
+		height: 300px;
+		float: left;
+		padding: 10px 10px 10px 10px;
+	}
+	.placeholder 
+	{
+		width: 100%;
+		height: 100%;
+	}
+        #tooltip {
+                position: absolute;
+                display: none;
+                font-weight: bold;
+                font-size: normal;
+                padding: 10px;
+                border: 1px solid #000;
+                padding: 2px;
+                background-color: #fee;
+                opacity: 0.90;
+                z-index: 20;
+                text-align: center;
+                width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+
+<hr> VOLT-FLOGG - Standardavvik av siste 100 målinger - 10 sekunder - Siste oppdatering <span id="Tittel"></span> ALLE OVNER  </hr>
+    
+	<div id="overview">
+	</div>
+</body>
+</html>
