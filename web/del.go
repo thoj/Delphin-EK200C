@@ -317,8 +317,8 @@ func (d *DelphinReceiver) Start() {
 func NewDelphinReceiver(addr string) *DelphinReceiver {
 	d := new(DelphinReceiver)
 	d.addr = addr
-	d.FIRTaps = 800
-	d.SampleTime = 250 * time.Millisecond
+	d.FIRTaps = 400
+	d.SampleTime = 1000 * time.Millisecond
 	d.calc_chan = make(chan DelphinChannelData, 100)   //Value calculations
 	d.buffer_chan = make(chan DelphinChannelData, 100) //Value buffer
 	d.ValueBufferRaw = make([]*ring.Ring, 31)          //Should be faster and smaller then a map

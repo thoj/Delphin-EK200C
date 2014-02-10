@@ -24,6 +24,7 @@
 			"0-27": "Ovn 1",
 			"1-0": "Ovn 6",
 			"1-2": "Ovn 7",
+			"0-28": "Ovn 9",
 			"1-4": "Ovn 11",
 			"1-22": "Ovn 14",
 			"1-29": "Ovn 15",
@@ -31,7 +32,7 @@
             "0-1": "Ovn 20",
 			"0-2": "Ovn 21",
             "0-3": "Ovn 22",
-            "0-4": "Ovn 23",
+			"0-4": "Ovn 23",	
             "0-5": "Ovn 24",
             "0-6": "Ovn 25",
             "0-7": "Ovn 26",
@@ -51,7 +52,6 @@
             "0-23": null,
             "0-25": null,
             "0-26": null,
-            "0-28": null,
             "0-29": "Ovn 49",
             "0-30": "Ovn 50",
             "1-1": "Ovn 52",
@@ -78,6 +78,7 @@
             "1-28": null,
             "1-30": "Ovn 80",	   
         };
+
 	
 	var deffraurl = getParameterByName("def");
 
@@ -196,7 +197,7 @@
 		    chint = ch;
 	    }
              $.ajax({
-                url: "/json/slow?channel=" + chint + "&values=" + intervall,
+                url: "/json/slow?channel=" + chint + "&unit="+ unit + "&values=" + intervall,
                 type: "GET",
                 dataType: "json",
                 cache: false,

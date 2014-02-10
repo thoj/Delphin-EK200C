@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	STD_DEV_RED      = 32
+	STD_DEV_RED      = 30
 	SLOW_BUFFER_SIZE = 20000
 )
 
@@ -68,14 +68,23 @@ func doNr(r *ring.Ring, n int, f func(interface{})) int {
 	return i
 }
 
-func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]*ring.Ring) {
+func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]*ring.Ring, std_dev_m [][]*ring.Ring) {
+	
+	active := make([][]bool, 5)
+	
+	for di, _ := range del {
+		active[di] = make([]bool, 31)
+	}
 
 	//Calculate x sec average
 	//Calculate standard deviation every 10 seconds
 	go func() {
 		t := time.NewTicker(10000 * time.Millisecond)
 		for {
+
 			for di, d := range del {
+				cnoise := float64(10000)
+				active_channels := 0
 				for i := 0; i < 31; i++ {
 					avg := float64(0)
 					num := doNr(d.ValueBuffer[i], STD_DEV_RED, func(e interface{}) { avg += e.(ChannelData).Value })
@@ -87,10 +96,24 @@ func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]
 						std = math.Sqrt(std / float64(num2))
 						std_dev[di][i] = std_dev[di][i].Next()
 						std_dev[di][i].Value = ChannelData{last, std}
+						//For Common noise
+						if std < cnoise && active[di][i] && !(i == 30 && di == 1)  {
+							cnoise = std
+							log.Printf("Noise: %f %d", cnoise, i)
+						}
+						active_channels++
 						slow_buffer[di][i] = slow_buffer[di][i].Next()
 						slow_buffer[di][i].Value = ChannelData{last, avg}
 					}
 
+				}
+				//cnoise = cnoise / float64(active_channels)
+				for i := 0; i < 31; i++ {
+					if std_dev[di][i].Value != nil {
+						std_dev_m[di][i] = std_dev_m[di][i].Next()
+						l := std_dev[di][i].Value.(ChannelData)
+						std_dev_m[di][i].Value = ChannelData{l.Timestamp, l.Value - cnoise}
+					}
 				}
 			}
 			<-t.C
@@ -108,6 +131,10 @@ func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]
 			if unit, err = strconv.Atoi(r.FormValue("unit")); err != nil {
 				unit = 0
 			}
+			if ! active[unit][ch] {
+				log.Printf("Set %d/%d Active", unit, ch)
+				active[unit][ch] = true
+			}
 			if requested_values, err = strconv.Atoi(r.FormValue("values")); err != nil {
 				requested_values = 100
 			}
@@ -121,7 +148,7 @@ func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]
 				e = e.Prev()
 			}
 			stddev := make([]interface{}, 0, requested_values)
-			e = std_dev[unit][ch]
+			e = std_dev_m[unit][ch]
 			for i := 0; i < requested_values && e.Value != nil; i++ {
 				stddev = append(stddev, []interface{}{int64(e.Value.(ChannelData).Timestamp.UnixNano()/1000/1000) + int64(zone_offset*1000), float64(int64(e.Value.(ChannelData).Value*1000)) / 1000})
 				e = e.Prev()
@@ -186,6 +213,7 @@ func main() {
 
 	slow_buffer := make([][]*ring.Ring, units)
 	std_dev := make([][]*ring.Ring, units)
+	std_dev_m := make([][]*ring.Ring, units)
 	del := make([]*DelphinReceiver, units)
 
 	for d := 0; d < units; d++ { // Initilize buffers and start collectors
@@ -193,12 +221,15 @@ func main() {
 
 		slow_buffer[d] = make([]*ring.Ring, 31)
 		std_dev[d] = make([]*ring.Ring, 31)
+		std_dev_m[d] = make([]*ring.Ring, 31)
 		for i := 0; i < 31; i++ {
 			slow_buffer[d][i] = ring.New(SLOW_BUFFER_SIZE)
 			std_dev[d][i] = ring.New(SLOW_BUFFER_SIZE)
+			std_dev_m[d][i] = ring.New(SLOW_BUFFER_SIZE)
 		}
 		LoadRingBuffer(slow_buffer[d], fmt.Sprintf("slow_buffer%d", d))
 		LoadRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
+		LoadRingBuffer(std_dev_m[d], fmt.Sprintf("std_dev_m%d", d))
 
 		go DatabaseCollector(slow_buffer[d], 1)
 		go del[d].Start()
@@ -209,11 +240,12 @@ func main() {
 			for ds := 0; ds < units; ds++ { // Initilize buffers and start collectors
 				SaveRingBuffer(slow_buffer[ds], fmt.Sprintf("slow_buffer%d", ds))
 				SaveRingBuffer(std_dev[ds], fmt.Sprintf("std_dev%d", ds))
+				SaveRingBuffer(std_dev_m[ds], fmt.Sprintf("std_dev_m%d", ds))
 				log.Printf("Saved buffers in %v", time.Now().Sub(now))
 			}
 		}
 	}()
-	go httpserver(del, slow_buffer, std_dev)
+	go httpserver(del, slow_buffer, std_dev, std_dev_m)
 	time.Sleep(5 * time.Second)
 	/*	err = termbox.Init()
 		if err != nil {

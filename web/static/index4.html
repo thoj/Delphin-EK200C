@@ -17,6 +17,7 @@
 		var def = {
 			"0-27": "Ovn 1",
 			"1-0": "Ovn 6",
+			"1-2": "Ovn 7",
 			"0-28": "Ovn 9",
 			"1-4": "Ovn 11",
 			"1-22": "Ovn 14",
@@ -24,11 +25,10 @@
 			"0-0": "Ovn 19",
             "0-1": "Ovn 20",
 			"0-2": "Ovn 21",
-            "0-3": "Ovn 22",
-			 "0-4": "Ovn 1 Analog",
-			 "1-2": "Ovn 7 Phoenix GV",
-             "0-5": "Ovn 7 Gammel GV",
-             "0-6": "Ovn 7 Krone GV",
+            "0-3": null,
+			"0-4": "Ovn 23",	
+            "0-5": "Ovn 24",
+            "0-6": "Ovn 25",
             "0-7": "Ovn 26",
             "0-9": "Ovn 27",
             "0-10": "Ovn 28",
@@ -79,8 +79,8 @@
 		var plot = {};
 		var defaktiv = {};
 		// FASTE STARTVERDIER
-		var hoystd = 10;
-		var lavstd = 4;
+		var hoystd = 12;
+		var lavstd = 6;
 		var trinning = 0;
 		// Definisjon av grafen
         var options = {
@@ -248,7 +248,7 @@
                             data: series.stddev,
                             yaxis: 2
                         }, {
-                            label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")" + alarm2[ch]+"--" + trinning,
+                            label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")" + alarm2[ch],
                             color: "blue",
                             data: series.values
                         }, ];
@@ -283,7 +283,7 @@
 								data: series.stddev,
 								yaxis: 2
 							}, {
-								label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")"+ alarm2[ch]+"-" + ch +"-" + chint,
+								label: def[ch] + '<br>' + series.values[0][1] + "mV (" + series.stddev[0][1] + ")"+ alarm2[ch],
 								color: "blue",
 								data: series.values
 							}, ];
@@ -364,8 +364,9 @@
 
 
 <table class="meldinger" style="width:100%"; border= "0">
+
 	<h1 style="background-color:yellow;text-align: center; font-size : 24px; border:2px solid red;"> 
-		<b>USTABILE OVNER 
+		<b>USTABILE OVNER
 			<span><strong>
 				<a href="http://24timezones.com/world_directory/current_oslo_time.php" style="text-decoration: none" target="_BLANK" title="timezone Oslo"></a> 
 				- <span id="tzTimeSpan_ee528bef210f4c3"></span>
