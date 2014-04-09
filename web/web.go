@@ -96,10 +96,10 @@ func httpserver(del []*DelphinReceiver, slow_buffer [][]*ring.Ring, std_dev [][]
 						std = math.Sqrt(std / float64(num2))
 						std_dev[di][i] = std_dev[di][i].Next()
 						std_dev[di][i].Value = ChannelData{last, std}
-						//For Common noise
-						if std < cnoise && active[di][i] && !(i == 30 && di == 1)  {
+						//For Common noise77
+						if std < cnoise && active[di][i] && !(i == 30 && di == 1) && (avg > 1000) {
 							cnoise = std
-							log.Printf("Noise: %f %d", cnoise, i)
+							log.Printf("Noise: %f (Kanal: %d Verdi: %f)", cnoise, i, avg)
 						}
 						active_channels++
 						slow_buffer[di][i] = slow_buffer[di][i].Next()

@@ -78,17 +78,18 @@
 		var alarm2 = {};
 		var plot = {};
 		var defaktiv = {};
-		// FASTE STARTVERDIER
+	// FASTE STARTVERDIER
 		var hoystd = 12;
 		var lavstd = 6;
 		var trinning = 0;
-		// Definisjon av grafen
+	// Definisjon av grafen
         var options = {
             grid: {
-			backgroundColor: { colors: ["lightgray","white","white","white","white","white"] },
-			clickable: true,
-			hoverable: true,
-			autoHighlight: true,
+			backgroundColor: { 
+				colors: ["lightgray","white","white","white","white","white"] },
+				clickable: true,
+				hoverable: true,
+				autoHighlight: true,
 			},
 			 font:{
 				 size: 14,
@@ -99,11 +100,9 @@
                 show: true,
                 steps: true,
 				lineWidth: 2,
-				
             },
             xaxis: {
                 mode: "time"
-			
             },
             yaxes: [{}, {
                 font:{
@@ -263,6 +262,13 @@
 						if (alarm1[ch] > 0) {
 							//Høy Alarm
 							s = [{
+								lines: {
+								show: true,
+								steps: true,
+								lineWidth: 1,
+								fill: 0.9,
+							//	fillColor: '("red",0.9)',	
+							},
 								label: null,
 								color: "red",
 								data: series.stddev,
@@ -278,6 +284,14 @@
 						else if (alarm2[ch] > 0) {
 							//Lav Alarm
 							s = [{
+								lines: {
+								show: true,
+								steps: true,
+								lineWidth: 1,
+								fill: 0.9,
+							//	fillColor: '("orange",0.9)',
+								
+							},
 								label: null,
 								color: "orange",
 								data: series.stddev,
@@ -293,6 +307,13 @@
 						else {
 							//Normal
 							s = [{
+								lines: {
+								show: true,
+								steps: true,
+								lineWidth: 1,
+								fill: true,
+								
+							},
 								label: null,
 								color: "lightgrey",
 								data: series.stddev,
@@ -302,6 +323,8 @@
 								color: "blue",
 								data: series.values
 							}, ];
+							alarm1[ch]--;
+							alarm2[ch]--;
 						}
 					}	
 					//gjemme bort de som ikke er i alarm		
@@ -387,7 +410,7 @@
  <button onclick="myFunction()">ok</button>
  <p id="demo"></p>
 -->
-	<h2 style="background-color: #CCFF33;text-align: left; font-size : 16px; border:1px solid red;">
+	<h2 style="background-color:yellow;text-align: left; font-size : 16px; border:1px solid red;">
 		1) Prøv å øke temperaturen. DVS. steng eventuelle smålokk og sjekk at ektrodene ikke står dypt.
 		</br> 2) Dersom alle lokk er stengt feedes det kun en blokk om gangen - dette gjelder spesielt når volten har økt og er ustabil (vandrer/hakkete)
 		</br> 3) På dagtid når det tappes si fra til driftsleder dersom en ovn blir ustabil (gjelder selvfølgelig før tapping).
