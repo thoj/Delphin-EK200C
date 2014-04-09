@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
+	<title>Overview F-LOGG-FALL</title>
+	<script src="/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<script src="/jquery.flot.js" type="text/javascript"></script>
+	<script src="/flogg_ovner.js" type="text/javascript"></script>
+	<script type="text/javascript">
+        $(function() {
+        function showTooltip(x, y, contents) {
+            $('<div id="tooltip">' + contents + '</div>').css({
+                top: y + 10,
+                left: x + 5
+            }).appendTo("body").fadeIn(200);
+        }
+      
+	
+		var trinn = {};
+		var alarm1 = {};
+		var alarm2 = {};
+		var plot = {};
+		var defaktiv = {};
+	// FASTE STARTVERDIER
+		var hoystd = 12;
+		var lavstd = 6;
+		var trinning = 0;
+		var endring ={};
+	// Definisjon av grafen
+        var options = {
+            grid: {
+			backgroundColor: { 
+				colors: ["lightgray","white","white","white","white","white"] },
+				clickable: true,
+				hoverable: true,
+				autoHighlight: true,
+			},
+			 font:{
+				 size: 14,
+				 weight: "bold",
+				 color: "black",
+				},
+			lines: {
+                show: true,
+                steps: true,
+				lineWidth: 2,
+            },
+            xaxis: {
+                mode: "time"
+            },
+            yaxes: [{}, {
+                font:{
+				 size: 14,
+				 weight: "bold",
+				 color: "black",
+				},
+				show: false,
+				min: 1,
+                max: 30,
+                alignTicksWithAxis: 1,
+                position: "right",
+				
+            }],
+            /* Posisjon av forklaring - verdier */
+            legend: {
+				show : true,
+				container: null,
+				size: 18,
+                position: "nw",
+				weight: "bold",
+                color: "black",	
+            },
+            shadowSize: 0
+        };
+		
+        for (var i in def) {
+            if (def[i] !== null  ) {	
+		//		if ((alarm1[ch] > 0 || alarm2[ch] > 0) && (trinning == 0)){
+		//	   $('#overview').append('<a href="visengraf.html?def='+ i +'"><div class="container"><div id="placeholder' + i + '" class="placeholder"><\/div></a>');
+	    //       }
+		     $('#overview').append('<div class="container"><div id="placeholder' + i + '" class="placeholder"><\/div>');
+        
+			}
+		}
+		
+        var data = [];
+        fetchData();
+        for (i in def) {
+            if (def[i] !== null) {
+               plot[i] = $.plot("#placeholder" + i, [], options);
+               $("#placeholder"+i).bind("plothover", function (event, pos, item) {
+                if (item) {
+                    if (previousPoint != item.datapoint) {
+                        previousPoint = item.datapoint;
+
+                        $("#tooltip").remove();
+                        var x = item.datapoint[0],
+                            y = item.datapoint[1],
+                            d = new Date(x);
+
+                        showTooltip(item.pageX, item.pageY, y+" mV- "+$.plot.formatDate(d, "%H:%M:%S %d/%m" , null));
+                    }
+                }
+                else {
+                     $("#tooltip").remove();
+                     previousPoint = null;
+                }
+                });
+            }
+        }
+
+
+        function fetchData() {
+		// Kaller og fyller opp trinn[ch] for senere å sjekke om alle har utslag samtidig => trinning av likeretter 
+	//		for (var i in def) {
+    //           if (def[i] !== null) {
+	//			   fetchChanneltrinn(i);
+    //            }
+	//		}	
+			  // trinning = 0;
+	//		  var h = 20;
+	//		  if (trinn[0] > h && trinn[1] > h && trinn[2] > h && trinn[3] > h && trinn[4] > h && trinn[5] > h && trinn[6] > h
+	//		   && trinn[7] > h && trinn[9] > h && trinn[10] > h )
+			//  && trinn[11] > h && trinn[12] > h  && trinn[13] > h && trinn[14] > h && trinn[16] > h && trinn[17] > h && trinn[18] > h && trinn[19] > h && trinn[20] > h)
+	//		  {
+	//		     trinning = 2;
+	//		  }
+			for (var i in def) {
+                if (def[i] !== null) {
+				   fetchChannel(i);
+                }
+            }
+            setTimeout(fetchData, 10000);
+        }
+
+
+        function fetchChannel(ch) {
+		
+		
+			    var unit = 0;
+				var strch = new String(ch);
+				var chint = 0;
+				if ( strch.length > 2 ) {
+					unit = strch.substring(0,1);
+					chint = strch.substring(2);
+					
+				} else {
+				chint = ch;
+				}
+		
+		
+            $.ajax({
+                url: "/json/slow?channel=" + chint + "&unit="+ unit + "&values=3000",
+                type: "GET",
+                dataType: "json",
+                cache: false,
+				success: function(series) {
+					//en hack for dette
+					var noptions = plot[ch].getOptions();
+					// Y - aksen på graf for visning av volt				
+					var nmin = series.values[0][1];
+                    noptions.yaxes[0].min = nmin -300
+                    noptions.yaxes[0].max = nmin + 300;
+					// Beregner gj.snitt volt for 8 timer siden - 200 målinger
+					var s;
+					var i;
+					var e = 0;
+					var en = 0;
+					for (var i=2800;i<3000;i++)
+					{
+					   e=e+series.values[i][1];
+					}
+					e=e / 200;
+					// Beregner gj.snitt volt siste 30 målinger
+					for (var i=0;i<30;i++)
+					{
+					   en=en+series.values[i][1];
+					}
+					en=en / 30;
+					endring[ch] = Math.round(en-e);
+				
+					// Hoy Alarm
+					    if (endring[ch] > 100) {
+					    alarm1[ch] = 360; 
+						defaktiv[ch] = 1;
+					} 
+					// Lav Alarm
+					else if (endring[ch] > 50) {
+					    alarm2[ch] = 180; 
+						defaktiv[ch] = 2;
+					}
+					
+                    // Fargekode på graf etter STD
+						
+						if (alarm1[ch] > 0) {
+							//Høy Alarm
+							s = [{
+								lines: {
+								show: true,
+								steps: true,
+								lineWidth: 1,
+								fill: 0.9,
+							//	fillColor: '("red",0.9)',	
+							},
+								label: null,
+								color: "red",
+								data: series.stddev,
+								yaxis: 2
+							}, {
+								label: def[ch] + '<br>' + series.values[0][1] + "mV (Økning:" + endring[ch] + "mV)",
+								color: "blue",
+								data: series.values
+							}, ];
+							alarm1[ch]--;
+							alarm2[ch]--;
+						}                 
+						else if (alarm2[ch] > 0) {
+							//Lav Alarm
+							s = [{
+								lines: {
+								show: true,
+								steps: true,
+								lineWidth: 1,
+								fill: true,
+							//	fillColor: '("orange")',
+								
+							},
+								label: null,
+								color: "orange",
+								data: series.stddev,
+								yaxis: 2
+							}, {
+									label: def[ch] + '<br>' + series.values[0][1] + "mV (Økning:" + endring[ch] + "mV)",
+								color: "blue",
+								data: series.values
+							}, ];
+							alarm1[ch]--;
+							alarm2[ch]--;
+						} 
+						else {
+							//Normal
+							
+							alarm1[ch]--;
+							alarm2[ch]--;
+						}
+						
+					//gjemme bort de som ikke er i alarm		
+                    if (alarm1[ch] > 0 || alarm2[ch] > 0)
+//					&& (trinning == 0)
+						
+						{
+                          $("#placeholder"+ch).parent().show();
+						} 
+						else {
+						  $("#placeholder"+ch).parent().hide();
+						}
+               
+					plot[ch].setData(s);
+                    plot[ch].setupGrid();
+                    plot[ch].draw();
+				
+					var today = new Date();
+				
+        //            $("#Tittel").text($.plot.formatDate(today, " %d/%m - %H:%M"));
+		//			<button onclick="myFunction()">ok</button>;
+		//			<p id="demo"></p>;
+                }
+            });
+        }
+    });
+    </script>
+    <style type="text/css">
+	.container 
+	{
+		border: 1px solid #ddd;
+		width: 280px;
+		height: 200px;
+		float: left;
+		padding: 10px 10px 10px 10px;
+	}
+	.placeholder 
+	{
+		width: 100%;
+		height: 100%;
+	}
+        #tooltip {
+                position: absolute;
+                display: none;
+                font-weight: bold;
+                font-size: normal;
+                padding: 10px;
+                border: 1px solid #000;
+                padding: 2px;
+                background-color: #fee;
+                opacity: 0.90;
+                z-index: 20;
+                text-align: center;
+                width: 200px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+<table class="meldinger" style="width:100%"; border= "0">
+
+	<h1 style="background-color:lightblue;text-align: center; font-size : 24px; border:2px solid red;"> 
+		<b>VARSLING AV OVNER MED ØKNING I VOLTEN SISTE 8 TIMER
+			<span><strong>
+				<a href="http://24timezones.com/world_directory/current_oslo_time.php" style="text-decoration: none" target="_BLANK" title="timezone Oslo"></a> 
+				- <span id="tzTimeSpan_ee528bef210f4c3"></span>
+				<script type="text/javascript" src="http://24timezones.com/js/en/time_24_1_0.js"></script>
+				<script src="http://24timezones.com/timescript/gettime.js.php?city=187&hourtype=24&showdate=1&showseconds=0&id=1568065&elem=ee528bef210f4c3" language="javascript"></script>
+			</strong></span> 
+
+		</b>
+	</h1>	
+
+
+ <script>
+// function myFunction()
+// { lavstd = 2;
+// document.getElementById("demo").innerHTML=lavstd;}
+ </script>
+ <!--
+ <button onclick="myFunction()">ok</button>
+ <p id="demo"></p>
+-->
+	<h2 style="background-color:lightblue;text-align: left; font-size : 16px; border:1px solid red;">
+		1) Følg med på disse ovnene - er det en jevn økning kan det skyldes at fallet over elektrodene begynner å bli høyt! Er det mer plutselig oppgang og hakkete skyldes det ofte Mg økning.
+		</br> 2) Ved temperatur fall og / eller Mg oppgang / nedgang og eventuelt bad giving vil det gi tilsvarende effekt - kontroller da mot temperaturen på ovnen.
+		</br> 3) Trinning på serien vil også virke inn.
+		</br> 
+		
+	</h2> 
+</table>
+    
+	<div id="overview">
+	</div>
+</body>
+</html>
