@@ -161,16 +161,16 @@
 					var nmin = series.values[0][1];
                     noptions.yaxes[0].min = nmin -300
                     noptions.yaxes[0].max = nmin + 300;
-					// Beregner gj.snitt volt for 8 timer siden - 200 målinger
+					// Beregner gj.snitt volt for 8 timer siden - 100 målinger
 					var s;
 					var i;
 					var e = 0;
 					var en = 0;
-					for (var i=2800;i<3000;i++)
+					for (var i=2900;i<3000;i++)
 					{
 					   e=e+series.values[i][1];
 					}
-					e=e / 200;
+					e=e / 100;
 					// Beregner gj.snitt volt siste 30 målinger
 					for (var i=0;i<30;i++)
 					{
