@@ -45,6 +45,7 @@ import (
 	"math"
 	"net"
 	"time"
+	"fmt"
 )
 
 const (
@@ -260,6 +261,7 @@ func (d *DelphinReceiver) receiverLoop() {
 			log.Printf("%s\n", err)
 			return
 		}
+		fmt.Printf("%#v\n", head);
 		switch {
 		case head.Com == 128: // Channel Data
 			databuf := bytes.NewBuffer(data)
@@ -313,6 +315,13 @@ func (d *DelphinReceiver) Start() {
 	}
 }
 
+func (d *DelphinReceiver) foo() {
+	time.Sleep(10 * time.Second)
+	request := &DelphinHeader{2, 0x01, 0, 0, d.sequencenr, 0, 0}
+	binary.Write(d.conn, binary.BigEndian, request)
+	d.sequencenr = d.sequencenr + 1
+}
+
 //Init set up everything needed for receiving data.
 func NewDelphinReceiver(addr string) *DelphinReceiver {
 	d := new(DelphinReceiver)
@@ -325,10 +334,11 @@ func NewDelphinReceiver(addr string) *DelphinReceiver {
 	d.ValueBuffer = make([]*ring.Ring, 31)             //Should be faster and smaller then a map
 	d.AdjustmentTable = make([]AdjustmentTable, 31)    //Should be faster and smaller then a map
 	go valueCalc(d)                                    // Send calculated values to buffer
+//	go d.foo()
 	go valueBuffer(d)                                  // Buffer Storage
 	//Send "Ping" Packets
 	go func() {
-		t := time.NewTicker(time.Second)
+		t := time.NewTicker(10*time.Second)
 		for {
 			if d.connected {
 				syncreq := &DelphinHeader{2, 0x20, 0x0c, 0, d.sequencenr, 0, 0}

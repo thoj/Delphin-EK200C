@@ -231,11 +231,12 @@ func main() {
 		LoadRingBuffer(std_dev[d], fmt.Sprintf("std_dev%d", d))
 		LoadRingBuffer(std_dev_m[d], fmt.Sprintf("std_dev_m%d", d))
 
-		go DatabaseCollector(slow_buffer[d], 1)
+		go DatabaseCollector(slow_buffer[d], d)
+	//	go InfluxCollector(del[d].ValueBuffer, d)
 		go del[d].Start()
 	}
 	go func() {
-		c := time.Tick(1 * time.Minute)
+		c := time.Tick(10 * time.Minute)
 		for now := range c {
 			for ds := 0; ds < units; ds++ { // Initilize buffers and start collectors
 				SaveRingBuffer(slow_buffer[ds], fmt.Sprintf("slow_buffer%d", ds))

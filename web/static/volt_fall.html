@@ -168,7 +168,9 @@
 					var en = 0;
 					for (var i=2900;i<3000;i++)
 					{
-					   e=e+series.values[i][1];
+					   if (series.values[i]) {	
+					   	e+=series.values[i][1];
+					   }
 					}
 					e=e / 100;
 					// Beregner gj.snitt volt siste 30 målinger
@@ -177,7 +179,12 @@
 					   en=en+series.values[i][1];
 					}
 					en=en / 30;
-					endring[ch] = Math.round(en-e);
+					//Ingen Data
+					if (e == 0) {
+						endring[ch] = 0;
+					} else {
+						endring[ch] = Math.round(en-e);
+					}
 				
 					// Hoy Alarm
 					    if (endring[ch] > 100) {
@@ -260,7 +267,10 @@
                     plot[ch].draw();
 				
 					var today = new Date();
-				
+					
+					today.setTime(today.getTime() - today.getTimezoneOffset()*60*1000);
+                    $("#Tittel").text($.plot.formatDate(today, "%H:%M - %d/%m")+".");
+ 			
         //            $("#Tittel").text($.plot.formatDate(today, " %d/%m - %H:%M"));
 		//			<button onclick="myFunction()">ok</button>;
 		//			<p id="demo"></p>;
@@ -306,13 +316,8 @@
 <table class="meldinger" style="width:100%"; border= "0">
 
 	<h1 style="background-color:lightblue;text-align: center; font-size : 24px; border:2px solid red;"> 
-		<b>VARSLING AV OVNER MED ØKNING I VOLTEN SISTE 8 TIMER
-			<span><strong>
-				<a href="http://24timezones.com/world_directory/current_oslo_time.php" style="text-decoration: none" target="_BLANK" title="timezone Oslo"></a> 
-				- <span id="tzTimeSpan_ee528bef210f4c3"></span>
-				<script type="text/javascript" src="http://24timezones.com/js/en/time_24_1_0.js"></script>
-				<script src="http://24timezones.com/timescript/gettime.js.php?city=187&hourtype=24&showdate=1&showseconds=0&id=1568065&elem=ee528bef210f4c3" language="javascript"></script>
-			</strong></span> 
+		<b>VARSLING AV OVNER MED ØKNING I VOLTEN SISTE 8 TIMER - Sist oppdatert <span id="Tittel"></span>
+			
 
 		</b>
 	</h1>	

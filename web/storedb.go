@@ -7,10 +7,39 @@ package main
 import (
 	"container/ring"
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	influx "github.com/influxdb/influxdb/client"
 	"log"
 	"time"
 )
+
+func InfluxCollector(buf []*ring.Ring, unit int) {
+	c, err := influx.NewClient(&influx.ClientConfig{Database: "voltlog"})
+
+	t := time.Tick(1 * time.Second)
+	for {
+		<-t
+		series := []*influx.Series{}
+		for i := 0; i < 31; i++ {
+			if buf[i] == nil || buf[i].Value == nil {
+				continue
+			}
+			points := [][]interface{}{
+				{buf[i].Value.(ChannelData).Timestamp.UnixNano() / 1000000, buf[i].Value.(ChannelData).Value},
+			}
+			s := &influx.Series{
+				Name:    fmt.Sprintf("d%02dc%02d", unit, i),
+				Columns: []string{"time", "value"},
+				Points:  points}
+			series = append(series, s)
+		}
+		if err = c.WriteSeries(series); err != nil {
+			log.Println(err)
+		}
+	}
+
+}
 
 func DatabaseCollector(buf []*ring.Ring, unit int) {
 	db, err := sql.Open("mysql", "vmr:vmr@tcp(192.168.0.13:3306)/ovnsvolt")
